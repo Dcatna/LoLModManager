@@ -37,7 +37,6 @@ func createChampionsTable(db *sql.DB) {
 	}
 }
 
-// Reads all champions
 func (db *DB) GetChampions() ([]Champion, error) {
 	rows, err := db.conn.Query("SELECT id, name, image, tags FROM champions")
 	if err != nil {
