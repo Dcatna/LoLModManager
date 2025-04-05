@@ -2,17 +2,42 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+
+	_ "github.com/mattn/go-sqlite3"
 )
+
+type Champion struct {
+	ID    string
+	Name  string
+	Image string
+	Tags  []string
+}
 
 // App struct
 type App struct {
 	ctx context.Context
+	db  *sql.DB
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
+}
+func (a *App) initDB() {
+	createChampionsTable := `
+		CREATE TABLE IF NOT EXISTS champions {
+			id TEXT PRIMARY KEY,
+			name TEXT,
+			image TEXT,
+			tags TEXT
+		};
+	`
+	_, err := a.db.Exec(createChampionsTable)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // startup is called when the app starts. The context is saved
