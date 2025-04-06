@@ -4,6 +4,7 @@ import App from './App'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './Home';
 import ReactDOM from 'react-dom/client';
+import ListSkins from './ListSkins';
 
 
 
@@ -12,7 +13,8 @@ const router = createBrowserRouter([
       path: "/",
       element: <App />,
       children: [
-        { path: "/", element: <Home /> }
+        { path: "/", element: <Home /> },
+        { path: "/find_skins", element: <ListSkins />}
       ]
     }
   ]);

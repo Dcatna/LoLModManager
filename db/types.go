@@ -6,3 +6,12 @@ type Champion struct {
 	Image string
 	Tags  []string
 }
+
+type Skin struct {
+	ID       string
+	Title    string
+	Author   string
+	Image    string
+	Types    []string
+	ItemLink string
+}

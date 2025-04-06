@@ -3,11 +3,13 @@ module LoLModManager
 go 1.23
 
 require (
+	github.com/PuerkitoBio/goquery v1.10.2
 	github.com/mattn/go-sqlite3 v1.14.27
 	github.com/wailsapp/wails/v2 v2.10.1
 )
 
 require (
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect

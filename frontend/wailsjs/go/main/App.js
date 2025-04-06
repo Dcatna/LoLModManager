@@ -6,6 +6,10 @@ export function GetChampions() {
   return window['go']['main']['App']['GetChampions']();
 }
 
+export function GetSkins() {
+  return window['go']['main']['App']['GetSkins']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }

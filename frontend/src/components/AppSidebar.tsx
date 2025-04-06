@@ -1,4 +1,4 @@
-import { LogOutIcon, Box, LogIn, Link, ListIcon, LucideIcon, ComputerIcon, Moon, Sun } from 'lucide-react'
+import { LogOutIcon, Box, LogIn, Link, ListIcon, LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon } from 'lucide-react'
 import React from 'react'
 import { SidebarHeader, SidebarContent, SidebarGroup, SidebarMenu, SidebarFooter, SidebarMenuButton, SidebarMenuItem, useSidebar, Sidebar } from './ui/sidebar'
 import { cn } from '@/lib/utils';
@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { useTheme } from './Theme';
+import { useNavigate } from 'react-router-dom';
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,6 +42,8 @@ export function SidebarItem(props: SidebarProps) {
 }
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+  const navigate = useNavigate()
+
   return (
     <Sidebar
       {...props}
@@ -51,6 +54,8 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarHeader className="">
           <ModeToggle />
           {/* ADD  SETTIGNS AND SEARCH*/}
+          <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/")}/>
+          <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")}/>
       </SidebarHeader>
 
       <SidebarContent className=" space-y-4">
