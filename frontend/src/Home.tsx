@@ -15,12 +15,12 @@ const Home = (props: Props) => {
 
 
   return (
-    <div className="p-8 overflow-x-auto">
+    <div className="overflow-x-auto">
         <h1 className="text-3xl font-bold mb-4">League Champions</h1>
-        <div className="columns-3 sm:columns-4 lg:columns-5 gap-4 ">
+        <div className=" sm:columns-5 md:columns-7 lg:columns-10 ">
             <div className=''>
                 {value.map((champ) => (
-                    <div key={champ.ID} className="border p-4 rounded shadow break-inside-avoid">
+                    <div key={champ.ID} className="border rounded shadow break-inside-avoid">
                     <img src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} alt="" />
                     <p className="font-semibold">{champ.Name}</p>
                     <p className="text-gray-500">{champ.Tags}</p>
