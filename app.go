@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 
-	"fmt"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"LoLModManager/db"
+	"fmt"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
 
 // App struct
 type App struct {
@@ -33,13 +33,14 @@ func (a *App) startup(ctx context.Context) {
 	err := a.db.SeedChampions()
 
 	if err != nil {
-		runtime.LogError(ctx, "Failed to seed: " + err.Error())
+		runtime.LogError(ctx, "Failed to seed: "+err.Error())
 	}
 
 }
 func (a *App) GetChampions() ([]db.Champion, error) {
 	return a.db.GetChampions()
 }
+
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 

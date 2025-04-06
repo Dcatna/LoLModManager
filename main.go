@@ -10,7 +10,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-
 //go:embed all:frontend/dist
 var assets embed.FS
 
@@ -20,9 +19,18 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "LoLModManager",
-		Width:  1024,
-		Height: 768,
+		Title:             "LoLModManager",
+		Width:             1024,
+		Height:            768,
+		MinWidth:          1024,
+		MinHeight:         768,
+		MaxWidth:          3840,
+		MaxHeight:         2160,
+		DisableResize:     false,
+		Fullscreen:        false,
+		Frameless:         false,
+		StartHidden:       false,
+		HideWindowOnClose: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -37,4 +45,3 @@ func main() {
 		println("Error:", err.Error())
 	}
 }
-

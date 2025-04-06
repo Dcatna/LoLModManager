@@ -45,8 +45,8 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
     <Sidebar
       {...props}
       collapsible="icon"
-      variant="sidebar"
-      className="max-h-screen overflow-hidden border-r border-gray-300 "
+
+      className="max-h-screen overflow-hidden border-r border-gray-300"
     >
       <SidebarHeader className="">
           <ModeToggle />

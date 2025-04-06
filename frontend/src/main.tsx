@@ -1,30 +1,26 @@
 import React from 'react'
-import {createRoot} from 'react-dom/client'
 import './index.css';
-
 import App from './App'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './Home';
+import ReactDOM from 'react-dom/client';
 
 
 
 const router = createBrowserRouter([
     {
       path: "/",
-      element: <App />, // Your App wrapper component (ThemeProvider, Sidebar, etc.)
+      element: <App />,
       children: [
         { path: "/", element: <Home /> }
       ]
     }
   ]);
 
-    
-const container = document.getElementById('root')
 
-const root = createRoot(container!)
-
-root.render(
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
-    </React.StrictMode>
-)
+      <RouterProvider router={router} />
+    </React.StrictMode>,
+  )
+  
