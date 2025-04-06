@@ -53,7 +53,7 @@ func (db *DB) GetChampions() ([]Champion, error) {
 	return champions, nil
 }
 
-// Seeds champions from Riot API
+
 func (db *DB) SeedChampions() error {
 	var count int
 	err := db.conn.QueryRow("SELECT COUNT(*) FROM champions").Scan(&count)
@@ -74,11 +74,15 @@ func (db *DB) SeedChampions() error {
 
 	var raw struct {
 		Data map[string]struct {
-			ID   string   `json:"id"`
-			Name string   `json:"name"`
-			Tags []string `json:"tags"`
+			ID    string   `json:"id"`
+			Name  string   `json:"name"`
+			Tags  []string `json:"tags"`
+			Image struct {
+				Full string `json:"full"`
+			} `json:"image"`
 		} `json:"data"`
 	}
+
 	json.Unmarshal(body, &raw)
 
 	tx, _ := db.conn.Begin()
@@ -87,7 +91,7 @@ func (db *DB) SeedChampions() error {
 
 	for _, champ := range raw.Data {
 		tagsJSON, _ := json.Marshal(champ.Tags)
-		_, _ = stmt.Exec(champ.ID, champ.Name, champ.ID+".png", string(tagsJSON))
+		_, _ = stmt.Exec(champ.ID, champ.Name, champ.Image.Full, string(tagsJSON))
 	}
 
 	tx.Commit()

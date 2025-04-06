@@ -1,5 +1,9 @@
 import { GetChampions } from  "../wailsjs/go/main/App"; // path may vary based on setup
 import { useEffect, useState } from 'react';
+import { ThemeProvider } from "./components/Theme";
+import AppSidebar from "./components/AppSidebar";
+import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
+import { Outlet } from "react-router-dom";
 
 function App() {
   const [champions, setChampions] = useState<any[]>([]);
@@ -19,17 +23,17 @@ function App() {
   }, []);
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-4">League Champions</h1>
-      <div className="grid grid-cols-3 gap-4">
-      {champions && champions.length > 0 && champions.map((champ) => (
-            <div key={champ.ID} className="border p-4 rounded shadow">
-                <p className="font-semibold">{champ.Name}</p>
-                <p className="text-gray-500">{champ.Tags}</p>
-            </div>
-            ))}
+    <>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <div className="bg-background text-foreground min-h-screen flex">
+        <SidebarProvider className="max-h-screen overflow-hidden">
+          <AppSidebar variant="sidebar" collapsible="icon" />
+          <SidebarTrigger />
+          <Outlet />
+        </SidebarProvider>
       </div>
-    </div>
+    </ThemeProvider>
+    </>
   );
 }
 
