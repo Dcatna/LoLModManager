@@ -7,11 +7,43 @@ type Champion struct {
 	Tags  []string
 }
 
-type Skin struct {
+type Skins struct {
 	ID       string
 	Title    string
 	Author   string
 	Image    string
 	Types    []string
 	ItemLink string
+}
+
+type Skin struct {
+	DownloadLink string
+	Gallery      []Gallery
+	Video        string
+	Overview     Overview
+	ModInfo      ModInfo
+}
+
+type ModInfo struct {
+	Updated   string
+	Published string
+	License   License
+}
+
+type License struct {
+	License string
+	Link    string
+}
+
+type Overview struct {
+	Champion     string
+	SkinModified string
+	Author       string
+	Description  string
+	ContactInfo  string
+}
+
+type Gallery struct {
+	Image string
+	Name  string
 }

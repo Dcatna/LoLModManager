@@ -4,6 +4,8 @@ import {db} from '../models';
 
 export function GetChampions():Promise<Array<db.Champion>>;
 
-export function GetSkins():Promise<Array<db.Skin>>;
+export function GetGalleryForSkin(arg1:string):Promise<Array<db.Gallery>>;
 
-export function Greet(arg1:string):Promise<string>;
+export function GetSkinDetails(arg1:string):Promise<db.Skin>;
+
+export function GetSkins():Promise<Array<db.Skins>>;

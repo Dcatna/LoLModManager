@@ -44,14 +44,8 @@ func (a *App) GetChampions() ([]db.Champion, error) {
 	return a.db.GetChampions()
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
-
-func (a *App) GetSkins() []db.Skin {
-	res, err := http.Get("https://runeforge.dev/mods?onlyGilded=false&search=&sortBy=recently_published")
+func (a *App) GetSkins() []db.Skins {
+	res, err := http.Get("https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&search=&sortBy=recently_published")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,7 +59,7 @@ func (a *App) GetSkins() []db.Skin {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var skins []db.Skin
+	var skins []db.Skins
 
 	doc.Find("div.group.flex.w-full.flex-col.rounded-xl.border").Each(func(i int, s *goquery.Selection) {
 
@@ -80,7 +74,7 @@ func (a *App) GetSkins() []db.Skin {
 		})
 		itemLink := s.Find("a.underline-offset-2.inline-flex").AttrOr("href", "")
 		id := strings.TrimPrefix(itemLink, "/mods/")
-		skins = append(skins, db.Skin{
+		skins = append(skins, db.Skins{
 			ID:       id,
 			Title:    title,
 			Image:    img,
@@ -90,12 +84,108 @@ func (a *App) GetSkins() []db.Skin {
 		})
 	})
 
-	for _, skin := range skins {
-		fmt.Println("Title:", skin.Title)
-		fmt.Println("Image:", skin.Image)
-		fmt.Println("Author:", skin.Author)
-		fmt.Println("Types:", skin.Types)
-		fmt.Println()
-	}
 	return skins
+}
+
+func (a *App) GetSkinDetails(url string) db.Skin {
+	fmt.Println(url)
+	res, err := http.Get("https://runeforge.dev" + url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var skin db.Skin
+
+	doc.Find("main.flex.flex-1.items-start").Each(func(i int, s *goquery.Selection) {
+		downloadLink := "https://runeforge.dev" + s.Find("a.flex.h-fit.transition-all").AttrOr("href", "")
+		gallery := a.GetGalleryForSkin(url + "/gallery")
+		video := s.Find("iframe.aspect-video.h-full.w-full").AttrOr("src", "")
+
+		var overview db.Overview
+		contactInfo := strings.TrimSpace(s.Find("p.my-2").Text())
+		overview.ContactInfo = contactInfo
+
+		s.Find("div.break-words ul li").Each(func(i int, li *goquery.Selection) {
+			label := li.Find("strong").Text()
+			value := strings.TrimSpace(strings.Replace(li.Text(), label, "", 1))
+
+			switch {
+			case strings.Contains(label, "Champion"):
+				overview.Champion = value
+			case strings.Contains(label, "Skin modified"):
+				overview.SkinModified = value
+			case strings.Contains(label, "Author"):
+				overview.Author = value
+			default:
+				overview.Description += value + " "
+			}
+		})
+
+		var modInfo db.ModInfo
+		s.Find("div.flex.flex-col.gap-1.rounded-lg").Each(func(i int, info *goquery.Selection) {
+			spans := info.Find("span.flex.flex-row.items-center.justify-center.gap-2")
+			updated := spans.Eq(0).Parent().Find("span").Eq(1).Text()
+			published := spans.Eq(1).Parent().Find("span").Eq(1).Text()
+
+			licenseContainer := info.Find("a.flex.h-fit.items-center")
+			licenseText := licenseContainer.Find("span.max-w-[250px].truncate").Text()
+			licenseLink, _ := licenseContainer.Attr("href")
+
+			modInfo.Updated = strings.TrimSpace(updated)
+			modInfo.Published = strings.TrimSpace(published)
+			modInfo.License = db.License{
+				License: strings.TrimSpace(licenseText),
+				Link:    strings.TrimSpace(licenseLink),
+			}
+		})
+
+		skin.DownloadLink = downloadLink
+		skin.Gallery = gallery
+		skin.Video = video
+		skin.Overview = overview
+		skin.ModInfo = modInfo
+	})
+
+	return skin
+}
+
+func (a *App) GetGalleryForSkin(url string) []db.Gallery {
+	fmt.Println(url)
+	res, err := http.Get("https://runeforge.dev" + url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var images []db.Gallery
+
+	doc.Find("div.relative.col-span-12.flex.flex-col.rounded-xl.border").Each(func(i int, s *goquery.Selection) {
+		image := s.Find("img").AttrOr("src", "")
+		name := s.Find("div.p-5 p.text-lg.font-bold").Text()
+		images = append(images, db.Gallery{
+			Image: image,
+			Name:  name,
+		})
+	})
+
+	return images
 }

@@ -2,19 +2,19 @@ import React from 'react';
 import { GetSkins } from "../../wailsjs/go/main/App";
 import { useStateProducerT } from '../lib/utils';
 import { Link } from 'react-router-dom';
-import { Skin } from '@/Types/types';
+import { Skins } from '@/Types/types';
 
 type Props = {}
 
 const ListSkins = (props: Props) => {
-  const { loading, error, value } = useStateProducerT<Skin[]>([], async (update) => {
+  const { loading, error, value } = useStateProducerT<Skins[]>([], async (update) => {
     const data = await GetSkins();
-    console.log(data); 
+
     update(data);
   });
 
   return (
-    <div className="p-8 min-h-screen bg-background text-foreground">
+    <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
       <h1 className="text-4xl font-bold mb-8 text-center">Find Custom Skins</h1>
 
       {loading && <div className="text-center text-lg">Loading...</div>}
