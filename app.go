@@ -111,39 +111,39 @@ func (a *App) GetSkinDetails(url string) db.Skin {
 		gallery := a.GetGalleryForSkin(url + "/gallery")
 		video := s.Find("iframe.aspect-video.h-full.w-full").AttrOr("src", "")
 
-		var overview db.Overview
-		contactInfo := strings.TrimSpace(s.Find("p.my-2").Text())
-		overview.ContactInfo = contactInfo
+		// contactInfo := strings.TrimSpace(s.Find("p.my-2").Text())
+		// overview.ContactInfo = contactInfo
 
-		s.Find("div.break-words ul li").Each(func(i int, li *goquery.Selection) {
-			label := li.Find("strong").Text()
-			value := strings.TrimSpace(strings.Replace(li.Text(), label, "", 1))
+		author := strings.TrimSpace(s.Find("p.text-lg.font-bold").First().Text())
+		skin.Author = author
 
-			switch {
-			case strings.Contains(label, "Champion"):
-				overview.Champion = value
-			case strings.Contains(label, "Skin modified"):
-				overview.SkinModified = value
-			case strings.Contains(label, "Author"):
-				overview.Author = value
-			default:
-				overview.Description += value + " "
-			}
-		})
+		// s.Find("div.break-words ul li").Each(func(i int, li *goquery.Selection) {
+		// 	label := li.Find("strong").Text()
+		// 	value := strings.TrimSpace(strings.Replace(li.Text(), label, "", 1))
 
-		var modInfo db.ModInfo
+		// 	switch {
+		// 	case strings.Contains(label, "Champion"):
+		// 		overview.Champion = value
+		// 	case strings.Contains(label, "Skin modified"):
+		// 		overview.SkinModified = value
+		// 	default:
+		// 		overview.Description += value + " "
+		// 	}
+		// })
+
+		var license db.License
 		s.Find("div.flex.flex-col.gap-1.rounded-lg").Each(func(i int, info *goquery.Selection) {
-			spans := info.Find("span.flex.flex-row.items-center.justify-center.gap-2")
-			updated := spans.Eq(0).Parent().Find("span").Eq(1).Text()
-			published := spans.Eq(1).Parent().Find("span").Eq(1).Text()
+			// spans := info.Find("span.flex.flex-row.items-center.justify-center.gap-2")
+			// updated := spans.Eq(0).Parent().Find("span").Eq(1).Text()
+			// published := spans.Eq(1).Parent().Find("span").Eq(1).Text()
 
 			licenseContainer := info.Find("a.flex.h-fit.items-center")
 			licenseText := licenseContainer.Find("span.max-w-[250px].truncate").Text()
 			licenseLink, _ := licenseContainer.Attr("href")
 
-			modInfo.Updated = strings.TrimSpace(updated)
-			modInfo.Published = strings.TrimSpace(published)
-			modInfo.License = db.License{
+			// modInfo.Updated = strings.TrimSpace(updated)
+			// modInfo.Published = strings.TrimSpace(published)
+			license = db.License{
 				License: strings.TrimSpace(licenseText),
 				Link:    strings.TrimSpace(licenseLink),
 			}
@@ -152,8 +152,7 @@ func (a *App) GetSkinDetails(url string) db.Skin {
 		skin.DownloadLink = downloadLink
 		skin.Gallery = gallery
 		skin.Video = video
-		skin.Overview = overview
-		skin.ModInfo = modInfo
+		skin.License = license
 	})
 
 	return skin

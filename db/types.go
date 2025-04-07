@@ -20,28 +20,28 @@ type Skin struct {
 	DownloadLink string
 	Gallery      []Gallery
 	Video        string
-	Overview     Overview
-	ModInfo      ModInfo
+	Author       string
+	License      License
 }
 
-type ModInfo struct {
-	Updated   string
-	Published string
-	License   License
-}
+// type ModInfo struct {
+// 	Updated   string
+// 	Published string
+// 	License   License
+// }
 
 type License struct {
 	License string
 	Link    string
 }
 
-type Overview struct {
-	Champion     string
-	SkinModified string
-	Author       string
-	Description  string
-	ContactInfo  string
-}
+// type Overview struct {
+// 	Champion     string
+// 	SkinModified string
+// 	Author       string
+// 	Description  string
+// 	ContactInfo  string
+// }
 
 type Gallery struct {
 	Image string

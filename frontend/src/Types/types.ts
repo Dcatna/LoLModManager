@@ -11,8 +11,8 @@ export interface Skin {
 	DownloadLink: string;
 	Gallery: Gallery[];
 	Video: string;
-	Overview: Overview;
-	ModInfo: ModInfo;
+	Author: string
+	License: License
   }
   
   export interface Gallery {
@@ -20,19 +20,19 @@ export interface Skin {
 	Name: string;
   }
   
-  export interface Overview {
-	Champion: string;
-	SkinModified: string;
-	Author: string;
-	Description: string;
-	ContactInfo: string;
-  }
+//   export interface Overview {
+// 	Champion: string;
+// 	SkinModified: string;
+// 	Author: string;
+// 	Description: string;
+// 	ContactInfo: string;
+//   }
   
-  export interface ModInfo {
-	Updated: string;
-	Published: string;
-	License: License;
-  }
+//   export interface ModInfo {
+// 	Updated: string;
+// 	Published: string;
+// 	License: License;
+//   }
   
   export interface License {
 	License: string;
