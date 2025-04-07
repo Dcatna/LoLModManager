@@ -2,9 +2,11 @@ import React from 'react'
 import './index.css';
 import App from './App'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './Home';
+
 import ReactDOM from 'react-dom/client';
-import ListSkins from './ListSkins';
+import ListSkins from './screens/ListSkins';
+import PreviewSkin from './screens/PreviewSkin';
+import Home from './screens/Home';
 
 
 
@@ -14,7 +16,8 @@ const router = createBrowserRouter([
       element: <App />,
       children: [
         { path: "/", element: <Home /> },
-        { path: "/find_skins", element: <ListSkins />}
+        { path: "/find_skins", element: <ListSkins />},
+        { path: "/preview_skin/:id", element: <PreviewSkin />}
       ]
     }
   ]);

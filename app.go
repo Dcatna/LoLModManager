@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -78,7 +79,9 @@ func (a *App) GetSkins() []db.Skin {
 			types = append(types, typeText)
 		})
 		itemLink := s.Find("a.underline-offset-2.inline-flex").AttrOr("href", "")
+		id := strings.TrimPrefix(itemLink, "/mods/")
 		skins = append(skins, db.Skin{
+			ID:       id,
 			Title:    title,
 			Image:    img,
 			Author:   author,

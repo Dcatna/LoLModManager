@@ -31,11 +31,11 @@ export function SidebarItem(props: SidebarProps) {
       >
 
         <props.icon />
-        <text
+        <span
           className={open ? "opacity-100" : "opacity-0"}
         >
           {props.name}
-        </text>
+        </span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
@@ -76,7 +76,7 @@ function ModeToggle() {
   return (
     <div className="z-50 rounded-lg ">
     <DropdownMenu>
-      <DropdownMenuTrigger className="w-full h-full justify-start">
+      <DropdownMenuTrigger asChild>
         <SidebarItem name="Toggle Theme" icon={theme === "system" ? ComputerIcon :  theme === "dark" ? Moon : Sun} />
       </DropdownMenuTrigger>
       

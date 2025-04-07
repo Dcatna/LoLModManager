@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { GetChampions } from  "../wailsjs/go/main/App"; // path may vary based on setup
-import { useStateProducerT } from './lib/utils';
+import { GetChampions } from  "../../wailsjs/go/main/App"; // path may vary based on setup
+import { useStateProducerT } from '@/lib/utils';
+
 
 
 type Props = {}
@@ -21,9 +22,9 @@ const Home = (props: Props) => {
             <div className=''>
                 {value.map((champ) => (
                     <div key={champ.ID} className="border rounded shadow break-inside-avoid">
-                    <img src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} alt="" />
-                    <p className="font-semibold">{champ.Name}</p>
-                    <p className="text-gray-500">{champ.Tags}</p>
+                        <img src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} alt="" />
+                        <p className="font-semibold">{champ.Name}</p>
+                        <p className="text-gray-500">{champ.Tags}</p>
                     </div>
                     
                 ))}
