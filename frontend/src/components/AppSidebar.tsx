@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { useTheme } from './Theme';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -25,10 +25,11 @@ export function SidebarItem(props: SidebarProps) {
       "text-md line-clamp-1 overflow-ellipsis bg-card text-card-foreground"
     )}>
       <SidebarMenuButton
-        variant={props.selected ? "outline" : "default"}
         onClick={props.onClick}
-        className="w-full h-full"
-      >
+        className={cn(
+          "w-full h-full",
+          props.selected && "bg-primary text-primary-foreground hover:bg-primary/90"
+        )}>
 
         <props.icon />
         <span
@@ -43,7 +44,7 @@ export function SidebarItem(props: SidebarProps) {
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const navigate = useNavigate()
-
+  const location = useLocation();
   return (
     <Sidebar
       {...props}
@@ -54,8 +55,8 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarHeader className="">
           <ModeToggle />
           {/* ADD  SETTIGNS AND SEARCH*/}
-          <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/")}/>
-          <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")}/>
+          <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/legends")} selected={location.pathname.includes("legends")}/>
+          <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")} selected={location.pathname.includes("skins")}/>
       </SidebarHeader>
 
       <SidebarContent className=" space-y-4">
@@ -76,7 +77,7 @@ function ModeToggle() {
   return (
     <div className="z-50 rounded-lg ">
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger className="w-full h-full justify-start">
         <SidebarItem name="Toggle Theme" icon={theme === "system" ? ComputerIcon :  theme === "dark" ? Moon : Sun} />
       </DropdownMenuTrigger>
       
