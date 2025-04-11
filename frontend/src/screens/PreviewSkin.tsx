@@ -2,7 +2,7 @@ import { useStateProducerT } from '@/lib/utils';
 import { Skin, Skins } from '@/Types/types';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { GetSkinDetails } from "../../wailsjs/go/main/App";
+import { GetSkinDetails, DownloadSkin } from "../../wailsjs/go/main/App";
 import { DownloadIcon } from 'lucide-react';
 
 type Props = {};
@@ -17,7 +17,26 @@ const PreviewSkin = (props: Props) => {
     update(data);
   });
 
-
+  async function downloadSkin() {
+    if (!value?.DownloadLink) {
+      console.log("NO DOWNLOAD LINK")
+      return 
+    }
+  
+    try {
+      const parts = value.DownloadLink.split("/");
+      console.log(parts)
+      const fileName = parts[parts.length - 1];
+  
+      console.log("Saving as filename:", fileName);
+  
+      await DownloadSkin(value.DownloadLink, fileName);
+      console.log("DOWNLOAD DONE");
+    } catch (e) {
+      console.error("FAILED TO DOWNLOAD: ", e);
+    }
+  }
+  
 
   return (
     <div className="flex w-full justify-center p-8 min-h-screen bg-background text-foreground overflow-y-auto">
@@ -66,6 +85,7 @@ const PreviewSkin = (props: Props) => {
       <a 
         href={value?.DownloadLink} 
         target="_blank" 
+        onClick={downloadSkin}
         className="flex items-center justify-center p-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/80 transition"
       >
         <DownloadIcon className="h-5 w-5" />

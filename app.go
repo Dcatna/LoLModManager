@@ -40,6 +40,10 @@ func (a *App) startup(ctx context.Context) {
 	}
 
 }
+
+func (a *App) DownloadSkin(downloadURL, saveName string) error {
+	return db.DownloadSkin(downloadURL, saveName)
+}
 func (a *App) GetChampions() ([]db.Champion, error) {
 	return a.db.GetChampions()
 }
