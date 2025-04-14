@@ -8,10 +8,10 @@ import { Outlet } from "react-router-dom";
 function App() {
 
   return (
-    <>
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-    <div className="bg-background text-foreground max-h-screen  flex flex-col">
 
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+    <div className="bg-background text-foreground max-h-screen  flex flex-col ">
+    
       <SidebarProvider className="max-h-screen overflow-hidden">
         <AppSidebar collapsible="icon"/>
         <SidebarTrigger />
@@ -19,7 +19,7 @@ function App() {
       </SidebarProvider>
     </div>
     </ThemeProvider>
-    </>
+
   );
 }
 

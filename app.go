@@ -50,6 +50,14 @@ func (a *App) FetchSkinsForChampionById(id string) ([]db.DownloadedSkin, error) 
 	return a.db.FetchSkinsForChampionById(id)
 }
 
+func (a *App) EnableSkin(skinName string) {
+
+}
+
+func (a *App) DisableSkin(skinName string) {
+	
+}
+
 func (a *App) GetSkins() []db.Skins {
 	res, err := http.Get("https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&search=&sortBy=recently_published")
 	if err != nil {

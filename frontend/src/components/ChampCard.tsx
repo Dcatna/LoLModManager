@@ -22,7 +22,7 @@ const ChampCard = (champ: Champ) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition w-full bg-card">
+    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card w-[350px]">
       
       <div className="flex flex-col items-center min-w-[150px]">
         <img 
@@ -40,7 +40,6 @@ const ChampCard = (champ: Champ) => {
           <div key={skin.ID} className="flex items-center justify-between p-2 border rounded">
             <div>
               <p className="text-md">{skin.Name}</p>
-              <p className="text-sm text-gray-400">{skin.FilePath.split("/").pop()}</p>
             </div>
             <Switch
               checked={activeSkinId === skin.ID}
