@@ -67,14 +67,14 @@ func DownloadFile(url string, saveName string) error {
 	return nil
 }
 
-func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion) error {
+func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, skinName string) error {
 	savePath := filepath.Join(".", "skins", saveName)
 	fmt.Println(characters)
 
 	if err := os.MkdirAll(filepath.Dir(savePath), 0755); err != nil {
 		return err
 	}
-	skinID, err := db.InsertSkin(saveName, savePath)
+	skinID, err := db.InsertSkin(skinName, savePath)
 	if err != nil {
 		return err
 	}

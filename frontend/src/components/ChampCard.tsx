@@ -34,8 +34,9 @@ const ChampCard = (champ: Champ) => {
         <p className="text-gray-500 text-sm">{champ.Tags}</p>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {skins.map((skin) => (
+      <div className="flex-1 grid grid-cols-1 gap-4">
+
+        {skins?.map((skin) => (
           <div key={skin.ID} className="flex items-center justify-between p-2 border rounded">
             <div>
               <p className="text-md">{skin.Name}</p>

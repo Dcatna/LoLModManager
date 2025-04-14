@@ -78,7 +78,7 @@ const PreviewSkin = () => {
         // onClick={downloadSkin}
         className="flex items-center justify-center p-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/80 transition"
       > 
-        <DownloadPopup downloadLink={value?.DownloadLink}/>
+        <DownloadPopup downloadLink={value?.DownloadLink} skinName={skin.Title}/>
       </button> :
       <div/>}
 
@@ -157,9 +157,10 @@ const PreviewSkin = () => {
 
 interface popupType {
   downloadLink : string
+  skinName: string
 }
 
-const DownloadPopup = ({ downloadLink }: popupType) => {
+const DownloadPopup = ({ downloadLink, skinName }: popupType) => {
   const [selectedChamps, setSelectedChamps] = useState<Champ[]>([])
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -202,7 +203,7 @@ const DownloadPopup = ({ downloadLink }: popupType) => {
   
       console.log("Saving as filename:", fileName)
   
-      await DownloadSkin(downloadLink, fileName, selectedChamps)
+      await DownloadSkin(downloadLink, fileName, selectedChamps, skinName)
       console.log("DOWNLOAD DONE")
     } catch (e) {
       console.error("FAILED TO DOWNLOAD: ", e)

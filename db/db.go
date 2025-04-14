@@ -42,7 +42,7 @@ func createSkinsTable(db *sql.DB) {
 	createTableSQL := `
 	CREATE TABLE IF NOT EXISTS skins (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name TEXT NOT NULL,
+		name TEXT NOT NULL UNIQUE,
 		file_path TEXT NOT NULL
 	)
 	`
@@ -67,6 +67,14 @@ func createSkinsTable(db *sql.DB) {
 }
 
 func (db *DB) InsertSkin(name string, filePath string) (int64, error) {
+	var existingID int64
+	err := db.conn.QueryRow("SELECT id FROM skins WHERE name = ?", name).Scan(&existingID)
+	if err == nil {
+		return existingID, nil
+	} else if err != sql.ErrNoRows {
+		return 0, err
+	}
+
 	res, err := db.conn.Exec("INSERT INTO skins (name, file_path) VALUES (?, ?)", name, filePath)
 	if err != nil {
 		return 0, err
