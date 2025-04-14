@@ -1,9 +1,20 @@
 import { useStateProducerT } from '@/lib/utils';
 import { Skin, Skins } from '@/Types/types';
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GetSkinDetails, DownloadSkin } from "../../wailsjs/go/main/App";
-import { DownloadIcon } from 'lucide-react';
+import { DownloadIcon, Plus } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { SidebarItem } from '@/components/AppSidebar';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 type Props = {};
 
@@ -88,7 +99,8 @@ const PreviewSkin = (props: Props) => {
         onClick={downloadSkin}
         className="flex items-center justify-center p-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/80 transition"
       >
-        <DownloadIcon className="h-5 w-5" />
+        <DownloadPopup />
+
       </a>
 
     </div>
@@ -143,7 +155,7 @@ const PreviewSkin = (props: Props) => {
 
         {/* License Section */}
         {value?.License && (
-          <div className="w-full text-center">
+          <div className="w-full text-center pb-2">
             <p className="text-sm mt-4">
               <strong>License:</strong> {value?.License.License || "Unknown"} {' '}
               {value?.License.Link && (
@@ -162,5 +174,115 @@ const PreviewSkin = (props: Props) => {
     </div>
   );
 };
+
+
+const DownloadPopup = () => {
+  const [selectedChamps, setSelectedChamps] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      console.log("Selected Champions:", selectedChamps);
+
+      setSelectedChamps([]);
+      setOpen(false);
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("An unexpected error occurred. Please try again.");
+    }
+  };
+
+  const champions = ["Ahri", "Lux", "Yasuo", "Zed", "Karthus"]; // example list
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger 
+        className="bg-background text-foreground rounded-lg shadow-md" 
+        onClick={() => setOpen(true)}
+      >
+        <DownloadIcon className="h-5 w-5 text-white" />
+      </DialogTrigger>
+
+      <DialogContent className="max-w-lg p-6 rounded-lg bg-card shadow-lg">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold">Select Champion(s)</DialogTitle>
+          <DialogDescription className="text-sm">
+            Choose the champion(s) this skin belongs to.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleFormSubmit} className="mt-4 space-y-4">
+          <div>
+            <label
+              htmlFor="championSelect"
+              className="block text-sm font-medium"
+            >
+              Champions
+            </label>
+            <select
+              id="championSelect"
+              multiple
+              value={selectedChamps}
+              onChange={(e) => {
+                const selected = Array.from(
+                  e.target.selectedOptions,
+                  (option) => option.value
+                );
+                setSelectedChamps(selected);
+              }}
+              className="flex h-40 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            >
+              {champions.map((champ) => (
+                <option key={champ} value={champ}>
+                  {champ}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              className="py-2 px-4 rounded-md"
+            >
+              Save
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+
+const champions = ["Ahri", "Akali", "Lux", "Yasuo", "Zed", "Karthus", /* ... 200 champs */];
+
+export function ChampionSelector() {
+  const [query, setQuery] = useState('');
+  const [selectedChamp, setSelectedChamp] = useState('');
+
+  const filteredChamps = champions.filter((champ) =>
+    champ.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <Combobox value={selectedChamp} onChange={setSelectedChamp}>
+      <Combobox.Input
+        onChange={(event) => setQuery(event.target.value)}
+        className="border p-2 rounded w-full"
+        placeholder="Search champion..."
+      />
+      <Combobox.Options className="mt-2 bg-white shadow-md rounded">
+        {filteredChamps.map((champ) => (
+          <Combobox.Option key={champ} value={champ} className="p-2 hover:bg-gray-100">
+            {champ}
+          </Combobox.Option>
+        ))}
+      </Combobox.Options>
+    </Combobox>
+  );
+}
+
 
 export default PreviewSkin;
