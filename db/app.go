@@ -67,9 +67,9 @@ func DownloadFile(url string, saveName string) error {
 	return nil
 }
 
-func DownloadSkin(downloadURL, saveName string) error {
+func DownloadSkin(downloadURL, saveName string, characters []Champion) error {
 	savePath := filepath.Join(".", "skins", saveName)
-
+	fmt.Println(characters)
 	if err := os.MkdirAll(filepath.Dir(savePath), 0755); err != nil {
 		return err
 	}

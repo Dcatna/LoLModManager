@@ -1,3 +1,11 @@
+export interface Champ {
+	ID: string,
+	Name: string,
+	Image: string,
+	Tags: string[]
+}
+
+
 export interface Skins {
     ID:       string
 	Title:    string

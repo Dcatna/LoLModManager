@@ -3,7 +3,6 @@ package main
 import (
 	"LoLModManager/db"
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -41,8 +40,8 @@ func (a *App) startup(ctx context.Context) {
 
 }
 
-func (a *App) DownloadSkin(downloadURL, saveName string) error {
-	return db.DownloadSkin(downloadURL, saveName)
+func (a *App) DownloadSkin(downloadURL, saveName string, champions []db.Champion) error {
+	return db.DownloadSkin(downloadURL, saveName, champions)
 }
 func (a *App) GetChampions() ([]db.Champion, error) {
 	return a.db.GetChampions()
@@ -92,7 +91,7 @@ func (a *App) GetSkins() []db.Skins {
 }
 
 func (a *App) GetSkinDetails(url string) db.Skin {
-	fmt.Println(url)
+
 	res, err := http.Get("https://runeforge.dev" + url)
 	if err != nil {
 		log.Fatal(err)
@@ -163,7 +162,7 @@ func (a *App) GetSkinDetails(url string) db.Skin {
 }
 
 func (a *App) GetGalleryForSkin(url string) []db.Gallery {
-	fmt.Println(url)
+
 	res, err := http.Get("https://runeforge.dev" + url)
 	if err != nil {
 		log.Fatal(err)

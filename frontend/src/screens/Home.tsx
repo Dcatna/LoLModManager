@@ -1,14 +1,14 @@
 import React from 'react'
 import { GetChampions } from "../../wailsjs/go/main/App"; 
 import { useStateProducerT } from '@/lib/utils';
+import { Champ } from '@/Types/types';
 
 type Props = {}
 
 const Home = (props: Props) => {
 
-  const { loading, error, value } = useStateProducerT<any[]>([], async (update) => {
+  const { loading, error, value } = useStateProducerT<Champ[]>([], async (update) => {
     const data = await GetChampions();
-    console.log(data); 
     update(data);
   });
 
