@@ -7,6 +7,12 @@ type Champion struct {
 	Tags  []string
 }
 
+type DownloadedSkin struct {
+	ID       string
+	Name     string
+	FilePath string
+}
+
 type Skins struct {
 	ID       string
 	Title    string

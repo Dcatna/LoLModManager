@@ -6,6 +6,10 @@ export function DownloadSkin(arg1, arg2, arg3) {
   return window['go']['main']['App']['DownloadSkin'](arg1, arg2, arg3);
 }
 
+export function FetchSkinsForChampionById(arg1) {
+  return window['go']['main']['App']['FetchSkinsForChampionById'](arg1);
+}
+
 export function GetChampions() {
   return window['go']['main']['App']['GetChampions']();
 }

@@ -75,26 +75,25 @@ func (db *DB) InsertSkin(name string, filePath string) (int64, error) {
 }
 
 func (db *DB) LinkSkinToChampions(skinID int64, championIDs []Champion) error {
-    tx, err := db.conn.Begin()
-    if err != nil {
-        return err
-    }
-    stmt, err := tx.Prepare("INSERT INTO skin_champions (skin_id, champion_id) VALUES (?, ?)")
-    if err != nil {
-        return err
-    }
-    defer stmt.Close()
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return err
+	}
+	stmt, err := tx.Prepare("INSERT INTO skin_champions (skin_id, champion_id) VALUES (?, ?)")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
 
-    for _, champID := range championIDs {
-        _, err := stmt.Exec(skinID, champID)
-        if err != nil {
-            tx.Rollback()
-            return err
-        }
-    }
-    return tx.Commit()
+	for _, champ := range championIDs {
+		_, err := stmt.Exec(skinID, champ.ID)
+		if err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	return tx.Commit()
 }
-
 
 func (db *DB) GetChampions() ([]Champion, error) {
 	rows, err := db.conn.Query("SELECT id, name, image, tags FROM champions")
@@ -111,7 +110,6 @@ func (db *DB) GetChampions() ([]Champion, error) {
 	}
 	return champions, nil
 }
-
 
 func (db *DB) SeedChampions() error {
 	var count int

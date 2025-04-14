@@ -215,7 +215,7 @@ const DownloadPopup = ({ downloadLink }: popupType) => {
         className="bg-background text-foreground rounded-lg shadow-md"
         onClick={() => setOpen(true)}
       >
-        <DownloadIcon className="h-5 w-5 text-white" />
+        <DownloadIcon className="h-5 w-5 bg-primary text-white" />
       </DialogTrigger>
 
       <DialogContent className="max-w-lg p-6 rounded-lg bg-card shadow-lg">

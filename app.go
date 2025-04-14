@@ -41,10 +41,13 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) DownloadSkin(downloadURL, saveName string, champions []db.Champion) error {
-	return db.DownloadSkin(downloadURL, saveName, champions)
+	return a.db.DownloadSkin(downloadURL, saveName, champions)
 }
 func (a *App) GetChampions() ([]db.Champion, error) {
 	return a.db.GetChampions()
+}
+func (a *App) FetchSkinsForChampionById(id string) ([]db.DownloadedSkin, error) {
+	return a.db.FetchSkinsForChampionById(id)
 }
 
 func (a *App) GetSkins() []db.Skins {

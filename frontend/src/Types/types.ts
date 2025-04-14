@@ -5,6 +5,11 @@ export interface Champ {
 	Tags: string[]
 }
 
+export interface DownloadedSkin {
+	ID: string,
+	Name: string,
+	FilePath: string
+}
 
 export interface Skins {
     ID:       string

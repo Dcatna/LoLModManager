@@ -18,6 +18,22 @@ export namespace db {
 	        this.Tags = source["Tags"];
 	    }
 	}
+	export class DownloadedSkin {
+	    ID: string;
+	    Name: string;
+	    FilePath: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new DownloadedSkin(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.ID = source["ID"];
+	        this.Name = source["Name"];
+	        this.FilePath = source["FilePath"];
+	    }
+	}
 	export class Gallery {
 	    Image: string;
 	    Name: string;

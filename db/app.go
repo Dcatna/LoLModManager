@@ -67,12 +67,48 @@ func DownloadFile(url string, saveName string) error {
 	return nil
 }
 
-func DownloadSkin(downloadURL, saveName string, characters []Champion) error {
+func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion) error {
 	savePath := filepath.Join(".", "skins", saveName)
 	fmt.Println(characters)
+
 	if err := os.MkdirAll(filepath.Dir(savePath), 0755); err != nil {
+		return err
+	}
+	skinID, err := db.InsertSkin(saveName, savePath)
+	if err != nil {
+		return err
+	}
+
+	err = db.LinkSkinToChampions(skinID, characters)
+	if err != nil {
 		return err
 	}
 
 	return DownloadFile(downloadURL, savePath)
+}
+
+func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
+	query := `
+		SELECT skins.id, skins.name, skins.file_path
+		FROM skins
+		INNER JOIN skin_champions ON skins.id = skin_champions.skin_id
+		WHERE skin_champions.champion_id = ?
+	`
+
+	rows, err := db.conn.Query(query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var skins []DownloadedSkin
+	for rows.Next() {
+		var skin DownloadedSkin
+		if err := rows.Scan(&skin.ID, &skin.Name, &skin.FilePath); err != nil {
+			return nil, err
+		}
+		skins = append(skins, skin)
+	}
+
+	return skins, nil
 }
