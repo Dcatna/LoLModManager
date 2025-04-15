@@ -10,6 +10,8 @@ export function EnableSkin(arg1:string):Promise<void>;
 
 export function FetchSkinsForChampionById(arg1:string):Promise<Array<db.DownloadedSkin>>;
 
+export function FindLeaugeDownload():Promise<string>;
+
 export function GetChampions():Promise<Array<db.Champion>>;
 
 export function GetGalleryForSkin(arg1:string):Promise<Array<db.Gallery>>;

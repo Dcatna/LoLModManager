@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { GetSetting, SetSetting } from "../../wailsjs/go/main/App";
+import { GetSetting, SetSetting, FindLeaugeDownload } from "../../wailsjs/go/main/App";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +40,9 @@ const Settings = () => {
             />
             <Button variant="secondary" onClick={() => alert("add this lol")}>
               <FolderOpenIcon className="w-5 h-5" />
+            </Button>
+            <Button variant="secondary" onClick={() => FindLeaugeDownload()}>
+              Scan
             </Button>
           </div>
         </div>

@@ -18,7 +18,7 @@ const Home = (props: Props) => {
     <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
       <h1 className="text-3xl font-bold mb-8">League Champions</h1>
 
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
         {value.map((champ) => (
           <ChampCard ID={champ.ID} Name={champ.Name} Image={champ.Image} Tags={champ.Tags} /> 
         ))}

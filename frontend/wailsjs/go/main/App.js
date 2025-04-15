@@ -18,6 +18,10 @@ export function FetchSkinsForChampionById(arg1) {
   return window['go']['main']['App']['FetchSkinsForChampionById'](arg1);
 }
 
+export function FindLeaugeDownload() {
+  return window['go']['main']['App']['FindLeaugeDownload']();
+}
+
 export function GetChampions() {
   return window['go']['main']['App']['GetChampions']();
 }
