@@ -20,6 +20,7 @@ func InitDB() *DB {
 	}
 	createChampionsTable(conn)
 	createSkinsTable(conn)
+	createSettingsTable(conn)
 	return &DB{conn: conn}
 }
 
@@ -64,6 +65,20 @@ func createSkinsTable(db *sql.DB) {
 	if err2 != nil {
 		panic(err2)
 	}
+}
+
+func createSettingsTable(db *sql.DB) {
+	createTableSQL := `
+	CREATE TABLE IF NOT EXISTS settings (
+		key TEXT PRIMARY KEY,
+		value TEXT
+	)
+	`
+	_, err := db.Exec(createTableSQL)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func (db *DB) InsertSkin(name string, filePath string) (int64, error) {

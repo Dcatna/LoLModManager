@@ -6,7 +6,9 @@ import (
 	"log"
 	"net/http"
 	"strings"
-
+	"os"
+	"io"
+	"path/filepath"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 
@@ -49,14 +51,71 @@ func (a *App) GetChampions() ([]db.Champion, error) {
 func (a *App) FetchSkinsForChampionById(id string) ([]db.DownloadedSkin, error) {
 	return a.db.FetchSkinsForChampionById(id)
 }
-
-func (a *App) EnableSkin(skinName string) {
-
+func (a *App) SetSetting(key, value string) error {
+	return a.db.SetSetting(key, value)
+}
+func (a *App) GetSetting(key string) (string, error) {
+	return a.db.GetSetting(key)
 }
 
-func (a *App) DisableSkin(skinName string) {
-	
+func (a *App) EnableSkin(skinName string) error {
+    leagueModsPath := "C:\\Riot Games\\League of Legends\\Game\\Mods\\CharacterSkins\\Custom"
+    sourcePath := filepath.Join(".", "skins", skinName)
+    destPath := filepath.Join(leagueModsPath, skinName)
+
+    return copyDir(sourcePath, destPath)
 }
+
+func (a *App) DisableSkin(skinName string) error {
+    leagueModsPath := "C:\\Riot Games\\League of Legends\\Game\\Mods\\CharacterSkins\\Custom"
+    targetPath := filepath.Join(leagueModsPath, skinName)
+    return os.RemoveAll(targetPath)
+}
+
+func copyDir(src string, dst string) error {
+    entries, err := os.ReadDir(src)
+    if err != nil {
+        return err
+    }
+
+    if err := os.MkdirAll(dst, 0755); err != nil {
+        return err
+    }
+
+    for _, entry := range entries {
+        srcPath := filepath.Join(src, entry.Name())
+        dstPath := filepath.Join(dst, entry.Name())
+
+        info, err := entry.Info()
+        if err != nil {
+            return err
+        }
+
+        if info.IsDir() {
+            if err := copyDir(srcPath, dstPath); err != nil {
+                return err
+            }
+        } else {
+            in, err := os.Open(srcPath)
+            if err != nil {
+                return err
+            }
+            defer in.Close()
+
+            out, err := os.Create(dstPath)
+            if err != nil {
+                return err
+            }
+            defer out.Close()
+
+            if _, err = io.Copy(out, in); err != nil {
+                return err
+            }
+        }
+    }
+    return nil
+}
+
 
 func (a *App) GetSkins() []db.Skins {
 	res, err := http.Get("https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&search=&sortBy=recently_published")

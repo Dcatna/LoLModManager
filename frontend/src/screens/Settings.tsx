@@ -1,0 +1,57 @@
+import { useState, useEffect } from "react";
+import { GetSetting, SetSetting } from "../../wailsjs/go/main/App";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { FolderOpenIcon } from "lucide-react";
+
+const Settings = () => {
+  const [leaguePath, setLeaguePath] = useState("")
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const savedPath = await GetSetting("league_path")
+      if (savedPath) setLeaguePath(savedPath)
+    }
+    fetchSettings()
+  }, [])
+
+  const handleSave = async () => {
+    await SetSetting("league_path", leaguePath)
+
+  };
+
+  return (
+    <div className="p-8 min-h-screen bg-background text-foreground">
+      <h1 className="text-3xl font-bold mb-6">Settings</h1>
+
+      <div className="max-w-xl bg-card rounded-lg shadow p-6 space-y-6">
+        <div>
+          <Label htmlFor="leaguePath" className="block mb-2">
+            League of Legends Folder Path
+          </Label>
+          <div className="flex gap-2">
+            <Input
+              id="leaguePath"
+              type="text"
+              value={leaguePath}
+              onChange={(e) => setLeaguePath(e.target.value)}
+              placeholder="C:/Riot Games/League of Legends"
+            />
+            <Button variant="secondary" onClick={() => alert("add this lol")}>
+              <FolderOpenIcon className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <Button onClick={handleSave} className="px-6 py-2">
+            Save
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Settings;

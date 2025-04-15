@@ -1,4 +1,4 @@
-import { LogOutIcon, Box, LogIn, Link, ListIcon, LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon } from 'lucide-react'
+import { LogOutIcon, Box, LogIn, Link, ListIcon, LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon, Settings } from 'lucide-react'
 import React from 'react'
 import { SidebarHeader, SidebarContent, SidebarGroup, SidebarMenu, SidebarFooter, SidebarMenuButton, SidebarMenuItem, useSidebar, Sidebar } from './ui/sidebar'
 import { cn } from '@/lib/utils';
@@ -55,6 +55,7 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarHeader className="">
           <ModeToggle />
           {/* ADD  SETTIGNS AND SEARCH*/}
+          <SidebarItem name={'Settings'} icon={Settings} onClick={() => navigate("/settings")} selected={location.pathname.includes("settings")}/>
           <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/legends")} selected={location.pathname.includes("legends")}/>
           <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")} selected={location.pathname.includes("skins")}/>
       </SidebarHeader>
