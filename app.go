@@ -70,6 +70,7 @@ func (a *App) FindLeaugeDownload() (string, error) {
 
 		if d.IsDir() && d.Name() == wantedFolder {
 			folderPath = path
+			fmt.Println("FOUND")
 			return filepath.SkipDir
 		}
 
@@ -84,7 +85,42 @@ func (a *App) FindLeaugeDownload() (string, error) {
 		return "", fmt.Errorf("could not find League of Legends folder")
 	}
 
+	err = a.db.SetSetting("league_path", folderPath)
+
+	if err != nil {
+		return "", fmt.Errorf("found League folder but failed to save setting: %w", err)
+	}
 	return folderPath, err
+}
+
+func (a *App) BrowseLeagueFolder() (string, error) {
+    return a.OpenDirectoryDialog("Select League of Legends Folder", nil)
+}
+
+func (a *App) OpenMultipleFilesDialog(display string, filters []string) ([]string, error) {
+    return runtime.OpenMultipleFilesDialog(
+        a.ctx,
+        runtime.OpenDialogOptions{
+            Filters: []runtime.FileFilter{
+                {
+                    DisplayName: display,
+                    Pattern:     strings.Join(filters, ";"),
+                },
+            },
+        })
+}
+
+func (a *App) OpenDirectoryDialog(display string, filters []string) (string, error) {
+    return runtime.OpenDirectoryDialog(
+        a.ctx,
+        runtime.OpenDialogOptions{
+            Filters: []runtime.FileFilter{
+                {
+                    DisplayName: display,
+                    Pattern:     strings.Join(filters, ";"),
+                },
+            },
+        })
 }
 
 func (a *App) EnableSkin(skinName string) error {

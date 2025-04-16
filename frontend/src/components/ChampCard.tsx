@@ -22,7 +22,7 @@ const ChampCard = (champ: Champ) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card w-[350px]">
+    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card w-[320px]">
       
       <div className="flex flex-col items-center min-w-[150px]">
         <img 

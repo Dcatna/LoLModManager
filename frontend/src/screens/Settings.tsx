@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { GetSetting, SetSetting, FindLeaugeDownload } from "../../wailsjs/go/main/App";
+import { GetSetting, SetSetting, FindLeaugeDownload, BrowseLeagueFolder } from "../../wailsjs/go/main/App";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,7 +28,7 @@ const Settings = () => {
       <div className="max-w-xl bg-card rounded-lg shadow p-6 space-y-6">
         <div>
           <Label htmlFor="leaguePath" className="block mb-2">
-            League of Legends Folder Path
+            League of Legends Folder Path {leaguePath == "" ? "" : leaguePath}
           </Label>
           <div className="flex gap-2">
             <Input
@@ -36,9 +36,19 @@ const Settings = () => {
               type="text"
               value={leaguePath}
               onChange={(e) => setLeaguePath(e.target.value)}
-              placeholder="C:/Riot Games/League of Legends"
+              placeholder={leaguePath == "" ? "C:/Riot Games/League of Legends" : leaguePath}
             />
-            <Button variant="secondary" onClick={() => alert("add this lol")}>
+            <Button variant="secondary" onClick={async () => {
+              try {
+                const folder = await BrowseLeagueFolder()
+                if (folder) {
+                  setLeaguePath(folder)
+                  await handleSave()
+                }
+              } catch (e) {
+                alert(e)
+              }
+            }}>
               <FolderOpenIcon className="w-5 h-5" />
             </Button>
             <Button variant="secondary" onClick={() => FindLeaugeDownload()}>
