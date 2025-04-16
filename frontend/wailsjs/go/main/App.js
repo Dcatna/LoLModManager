@@ -42,8 +42,8 @@ export function GetSkinDetails(arg1) {
   return window['go']['main']['App']['GetSkinDetails'](arg1);
 }
 
-export function GetSkins() {
-  return window['go']['main']['App']['GetSkins']();
+export function GetSkins(arg1) {
+  return window['go']['main']['App']['GetSkins'](arg1);
 }
 
 export function OpenDirectoryDialog(arg1, arg2) {

@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetSkins } from "../../wailsjs/go/main/App";
 import { useStateProducerT } from '../lib/utils';
 import { Link } from 'react-router-dom';
 import { Skins } from '@/Types/types';
+import { Input } from '@/components/ui/input';
 
 type Props = {}
 
 const ListSkins = (props: Props) => {
-  const { loading, error, value } = useStateProducerT<Skins[]>([], async (update) => {
-    const data = await GetSkins();
+  const [search, setSearch] = useState("");
 
-    update(data);
-  });
+  const { loading, error, value } = useStateProducerT<Skins[]>([], async (update) => {
+      const data = await GetSkins(search);
+      update(data);
+    },
+    [search], 300);
 
   return (
     <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
@@ -19,7 +22,9 @@ const ListSkins = (props: Props) => {
 
       {loading && <div className="text-center text-lg">Loading...</div>}
       {error && <div className="text-center text-red-500">Error loading skins</div>}
-
+      <div className='mb-4'>
+        <Input placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)}/>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {value.length > 0 && value.map((skin) => (
           skin && skin.ID ? (

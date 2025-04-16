@@ -94,33 +94,33 @@ func (a *App) FindLeaugeDownload() (string, error) {
 }
 
 func (a *App) BrowseLeagueFolder() (string, error) {
-    return a.OpenDirectoryDialog("Select League of Legends Folder", nil)
+	return a.OpenDirectoryDialog("Select League of Legends Folder", nil)
 }
 
 func (a *App) OpenMultipleFilesDialog(display string, filters []string) ([]string, error) {
-    return runtime.OpenMultipleFilesDialog(
-        a.ctx,
-        runtime.OpenDialogOptions{
-            Filters: []runtime.FileFilter{
-                {
-                    DisplayName: display,
-                    Pattern:     strings.Join(filters, ";"),
-                },
-            },
-        })
+	return runtime.OpenMultipleFilesDialog(
+		a.ctx,
+		runtime.OpenDialogOptions{
+			Filters: []runtime.FileFilter{
+				{
+					DisplayName: display,
+					Pattern:     strings.Join(filters, ";"),
+				},
+			},
+		})
 }
 
 func (a *App) OpenDirectoryDialog(display string, filters []string) (string, error) {
-    return runtime.OpenDirectoryDialog(
-        a.ctx,
-        runtime.OpenDialogOptions{
-            Filters: []runtime.FileFilter{
-                {
-                    DisplayName: display,
-                    Pattern:     strings.Join(filters, ";"),
-                },
-            },
-        })
+	return runtime.OpenDirectoryDialog(
+		a.ctx,
+		runtime.OpenDialogOptions{
+			Filters: []runtime.FileFilter{
+				{
+					DisplayName: display,
+					Pattern:     strings.Join(filters, ";"),
+				},
+			},
+		})
 }
 
 func (a *App) EnableSkin(skinName string) error {
@@ -181,8 +181,9 @@ func copyDir(src string, dst string) error {
 	return nil
 }
 
-func (a *App) GetSkins() []db.Skins {
-	res, err := http.Get("https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&search=&sortBy=recently_published")
+func (a *App) GetSkins(search string) []db.Skins {
+	url := fmt.Sprintf(`https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&search=%s&sortBy=recently_published`, search)
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}

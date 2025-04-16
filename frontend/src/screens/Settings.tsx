@@ -21,6 +21,8 @@ const Settings = () => {
 
   };
 
+  console.log(leaguePath)
+
   return (
     <div className="p-8 min-h-screen bg-background text-foreground">
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
@@ -28,7 +30,7 @@ const Settings = () => {
       <div className="max-w-xl bg-card rounded-lg shadow p-6 space-y-6">
         <div>
           <Label htmlFor="leaguePath" className="block mb-2">
-            League of Legends Folder Path {leaguePath == "" ? "" : leaguePath}
+            Your League of Legends Folder Path: {leaguePath == "" ? "" : leaguePath}
           </Label>
           <div className="flex gap-2">
             <Input
@@ -51,7 +53,14 @@ const Settings = () => {
             }}>
               <FolderOpenIcon className="w-5 h-5" />
             </Button>
-            <Button variant="secondary" onClick={() => FindLeaugeDownload()}>
+            <Button variant="secondary" onClick={async () => {
+              try {
+                await FindLeaugeDownload()
+              } catch (e) {
+                alert(e)
+              }
+              
+              }}>
               Scan
             </Button>
           </div>
