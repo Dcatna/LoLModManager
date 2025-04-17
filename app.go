@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -198,7 +199,13 @@ func (a *App) GetSkins(search string) []db.Skins {
 		log.Fatal(err)
 	}
 	var skins []db.Skins
-
+	totalPages := 1
+	doc.Find("div.flex.flex-row.gap-1 button").Each(func(i int, s *goquery.Selection) {
+		text := s.Text()
+		if pageNum, err := strconv.Atoi(text); err == nil && pageNum > totalPages {
+			totalPages = pageNum
+		}
+	})
 	doc.Find("div.group.flex.w-full.flex-col.rounded-xl.border").Each(func(i int, s *goquery.Selection) {
 
 		img := s.Find("img.aspect-video").AttrOr("src", "")
@@ -213,12 +220,13 @@ func (a *App) GetSkins(search string) []db.Skins {
 		itemLink := s.Find("a.underline-offset-2.inline-flex").AttrOr("href", "")
 		id := strings.TrimPrefix(itemLink, "/mods/")
 		skins = append(skins, db.Skins{
-			ID:       id,
-			Title:    title,
-			Image:    img,
-			Author:   author,
-			Types:    types,
-			ItemLink: itemLink,
+			ID:         id,
+			Title:      title,
+			Image:      img,
+			Author:     author,
+			Types:      types,
+			ItemLink:   itemLink,
+			TotalPages: totalPages,
 		})
 	})
 

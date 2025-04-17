@@ -19,12 +19,12 @@ const ListSkins = (props: Props) => {
   return (
     <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
       <h1 className="text-4xl font-bold mb-8 text-center">Find Custom Skins</h1>
-
-      {loading && <div className="text-center text-lg">Loading...</div>}
-      {error && <div className="text-center text-red-500">Error loading skins</div>}
       <div className='mb-4'>
         <Input placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)}/>
       </div>
+      {loading && <div className="text-center text-lg">Loading...</div>}
+      {error && <div className="text-center text-red-500">Error loading skins</div>}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {value.length > 0 && value.map((skin) => (
           skin && skin.ID ? (

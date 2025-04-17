@@ -18,6 +18,7 @@ export interface Skins {
 	Image:    string
 	Types:    string[]
 	ItemLink: string
+	TotalPages: number
 }
 
 export interface Skin {
