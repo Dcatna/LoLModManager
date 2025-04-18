@@ -14,13 +14,17 @@ type DownloadedSkin struct {
 }
 
 type Skins struct {
-	ID         string
-	Title      string
-	Author     string
-	Image      string
-	Types      []string
-	ItemLink   string
-	TotalPages int
+	ID       string
+	Title    string
+	Author   string
+	Image    string
+	Types    []string
+	ItemLink string
+}
+
+type SkinsPage struct {
+	Skins      []Skins `json:"skins"`
+	TotalPages int     `json:"totalPages"`
 }
 
 type Skin struct {

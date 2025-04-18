@@ -22,7 +22,7 @@ export function GetSetting(arg1:string):Promise<string>;
 
 export function GetSkinDetails(arg1:string):Promise<db.Skin>;
 
-export function GetSkins(arg1:string):Promise<Array<db.Skins>>;
+export function GetSkins(arg1:string,arg2:number):Promise<db.SkinsPage>;
 
 export function OpenDirectoryDialog(arg1:string,arg2:Array<string>):Promise<string>;
 

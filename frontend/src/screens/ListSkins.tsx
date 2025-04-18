@@ -2,19 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { GetSkins } from "../../wailsjs/go/main/App";
 import { useStateProducerT } from '../lib/utils';
 import { Link } from 'react-router-dom';
-import { Skins } from '@/Types/types';
+import { Skin, Skins, SkinsPage } from '@/Types/types';
 import { Input } from '@/components/ui/input';
+import { callbackify } from 'util';
 
 type Props = {}
 
 const ListSkins = (props: Props) => {
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { loading, error, value } = useStateProducerT<Skins[]>([], async (update) => {
-      const data = await GetSkins(search);
-      update(data);
-    },
-    [search], 300);
+  const { loading, error, value } = useStateProducerT<SkinsPage | undefined>(undefined , async (update) => {
+      const data = await GetSkins(search, currentPage);
+      update({
+        Skins: data.skins,
+        TotalPages: data.totalPages
+      });
+
+    }, [search, currentPage], 300);
 
   return (
     <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
@@ -26,7 +31,7 @@ const ListSkins = (props: Props) => {
       {error && <div className="text-center text-red-500">Error loading skins</div>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {value.length > 0 && value.map((skin) => (
+        {value?.Skins.length!! > 0 && value?.Skins.map((skin) => (
           skin && skin.ID ? (
             <Link 
               to={`/preview_skin/${skin.ID}`} 
@@ -47,6 +52,53 @@ const ListSkins = (props: Props) => {
           ) : null
         ))}
       </div>
+      {!loading && !error ? <div className="flex justify-center mt-8">
+        <nav className="inline-flex items-center gap-1 bg-muted p-2 rounded-md shadow-sm">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded-md text-sm hover:bg-muted-foreground/10 disabled:opacity-30"
+          >
+            &lt;
+          </button>
+
+          {Array.from({ length: value?.TotalPages! }, (_, i) => i + 1).slice(0, 5).map((page) => (
+            <button
+              key={page}
+              onClick={() => setCurrentPage(page)}
+              className={`px-3 py-1 rounded-md text-sm ${
+                page === currentPage
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-muted-foreground/10"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          <span className="px-2">...</span>
+
+          <button
+            onClick={() => setCurrentPage(value?.TotalPages!)}
+            className={`px-3 py-1 rounded-md text-sm ${
+              currentPage === value?.TotalPages
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-muted-foreground/10"
+            }`}
+          >
+            {value?.TotalPages}
+          </button>
+
+          <button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, value?.TotalPages!))}
+            disabled={currentPage === value?.TotalPages}
+            className="px-3 py-1 rounded-md text-sm hover:bg-muted-foreground/10 disabled:opacity-30"
+          >
+            &gt;
+          </button>
+        </nav>
+      </div> : <div/>}
+
     </div>
   );
 }

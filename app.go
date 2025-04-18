@@ -182,14 +182,14 @@ func copyDir(src string, dst string) error {
 	return nil
 }
 
-func (a *App) GetSkins(search string) []db.Skins {
-	url := fmt.Sprintf(`https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&search=%s&sortBy=recently_published`, search)
+func (a *App) GetSkins(search string, page int) db.SkinsPage {
+	url := fmt.Sprintf(`https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&page=%d&search=%s&sortBy=recently_published`, page, search)
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer res.Body.Close()
+
 	if res.StatusCode != 200 {
 		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
 	}
@@ -198,39 +198,46 @@ func (a *App) GetSkins(search string) []db.Skins {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	var skins []db.Skins
 	totalPages := 1
-	doc.Find("div.flex.flex-row.gap-1 button").Each(func(i int, s *goquery.Selection) {
+
+	doc.Find("button.w-\\[30px\\]").Each(func(i int, s *goquery.Selection) {
 		text := s.Text()
-		if pageNum, err := strconv.Atoi(text); err == nil && pageNum > totalPages {
+		if pageNum, err := strconv.Atoi(strings.TrimSpace(text)); err == nil && pageNum > totalPages {
 			totalPages = pageNum
 		}
 	})
-	doc.Find("div.group.flex.w-full.flex-col.rounded-xl.border").Each(func(i int, s *goquery.Selection) {
 
+	fmt.Println(totalPages)
+
+	doc.Find("div.group.flex.w-full.flex-col.rounded-xl.border").Each(func(i int, s *goquery.Selection) {
 		img := s.Find("img.aspect-video").AttrOr("src", "")
 		title := s.Find("a.text-lg.font-bold").Text()
 		author := s.Find("a.underline.gap-2").Text()
 
 		var types []string
 		s.Find("div.h-fit.cursor-pointer.rounded-md").Each(func(i int, t *goquery.Selection) {
-			typeText := t.Text()
-			types = append(types, typeText)
+			types = append(types, t.Text())
 		})
+
 		itemLink := s.Find("a.underline-offset-2.inline-flex").AttrOr("href", "")
 		id := strings.TrimPrefix(itemLink, "/mods/")
+
 		skins = append(skins, db.Skins{
-			ID:         id,
-			Title:      title,
-			Image:      img,
-			Author:     author,
-			Types:      types,
-			ItemLink:   itemLink,
-			TotalPages: totalPages,
+			ID:       id,
+			Title:    title,
+			Image:    img,
+			Author:   author,
+			Types:    types,
+			ItemLink: itemLink,
 		})
 	})
 
-	return skins
+	return db.SkinsPage{
+		Skins:      skins,
+		TotalPages: totalPages,
+	}
 }
 
 func (a *App) GetSkinDetails(url string) db.Skin {
