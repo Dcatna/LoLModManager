@@ -30,4 +30,6 @@ export function OpenMultipleFilesDialog(arg1:string,arg2:Array<string>):Promise<
 
 export function RunCSLOLInjector():Promise<void>;
 
+export function RunPatcher():Promise<void>;
+
 export function SetSetting(arg1:string,arg2:string):Promise<void>;

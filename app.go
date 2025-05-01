@@ -44,26 +44,26 @@ func (a *App) startup(ctx context.Context) {
 		runtime.LogError(ctx, "Failed to seed: "+err.Error())
 	}
 
-	fmt.Println("Finding league start")
-	go func() {
-		injected := false
-		for {
-			if isLeagueRunning() && !injected {
-				fmt.Println("Injecting cslol injector")
-				err = a.RunCSLOLInjector()
-				if err != nil {
-					runtime.LogError(ctx, "Failed to run cslol-injector: "+err.Error())
-				} else {
-					fmt.Println("Injector launched")
-					injected = true
-				}
-			}
-			if !isLeagueRunning() {
-				fmt.Println("League Closed")
-				injected = false
-			}
-		}
-	}()
+	// fmt.Println("Finding league start")
+	// go func() {
+	// 	injected := false
+	// 	for {
+	// 		if isLeagueRunning() && !injected {
+	// 			fmt.Println("Injecting cslol injector")
+	// 			err = a.RunCSLOLInjector()
+	// 			if err != nil {
+	// 				runtime.LogError(ctx, "Failed to run cslol-injector: "+err.Error())
+	// 			} else {
+	// 				fmt.Println("Injector launched")
+	// 				injected = true
+	// 			}
+	// 		}
+	// 		if !isLeagueRunning() {
+	// 			fmt.Println("League Closed")
+	// 			injected = false
+	// 		}
+	// 	}
+	// }()
 
 }
 
@@ -86,6 +86,48 @@ func (a *App) RunCSLOLInjector() error {
 	fmt.Println(err)
 	if err != nil {
 		return fmt.Errorf("failed to run cslol-injector: %v", err)
+	}
+
+	return nil
+}
+
+func WriteProfileFile(modNames []string, profilePath string) error {
+	content := strings.Join(modNames, "/")
+	return os.WriteFile(profilePath, []byte(content), 0644)
+}
+
+func (a *App) RunPatcher() error {
+	// gameDir, err := a.db.GetSetting("league_path")
+	// if err != nil {
+	// 	return err
+	// }
+
+	// installDir := "./installed"
+	// profileDir := "./profiles/Defualt Profile"
+	// modToolsPath := "./tools/mod-tools.exe"
+
+	return nil
+}
+
+func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, selectedMods []string) error {
+	modsArg := strings.Join(selectedMods, "/")
+
+	cmd := exec.Command(
+		modToolsPath,
+		"mkoverlay",
+		installedDir,
+		profileDir,
+		fmt.Sprintf("--game:%s", gameDir),
+		fmt.Sprintf("--mods:%s", modsArg),
+	)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Println("Running:", cmd.String())
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("mod-tools mkoverlay failed: %w", err)
 	}
 
 	return nil

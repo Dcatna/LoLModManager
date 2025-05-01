@@ -5,6 +5,14 @@ export interface Champ {
 	Tags: string[]
 }
 
+export interface ChampCard {
+	ID: string,
+	Name: string,
+	Image: string,
+	Tags: string[],
+	updateActiveSkins: (skin: string, addOrRemove: string) => void
+}
+
 export interface DownloadedSkin {
 	ID: string,
 	Name: string,

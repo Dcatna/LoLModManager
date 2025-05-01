@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useStateProducerT } from "@/lib/utils";
-import { Champ, DownloadedSkin } from "@/Types/types";
+import { DownloadedSkin} from "@/Types/types";
+import type { ChampCard } from "@/Types/types";
 import { FetchSkinsForChampionById, EnableSkin, DisableSkin } from "../../wailsjs/go/main/App";
 import { Switch } from "@/components/ui/switch";
 
-const ChampCard = (champ: Champ) => {
+const ChampCard = (champ: ChampCard) => {
   const { loading, error, value: skins } = useStateProducerT<DownloadedSkin[]>([], async (update) => {
     const data = await FetchSkinsForChampionById(champ.ID);
     console.log(data)
@@ -14,12 +15,16 @@ const ChampCard = (champ: Champ) => {
   const [activeSkinId, setActiveSkinId] = useState<string | null>(null);
 
   const handleToggle =  async (filePath: string) => {
+    console.log(activeSkinId)
     if (activeSkinId === filePath) {
       await DisableSkin(filePath)
       setActiveSkinId(null)
+      champ.updateActiveSkins(filePath, "remove")
     } else {
       await EnableSkin(filePath)
       setActiveSkinId(filePath)
+      champ.updateActiveSkins(filePath, "add")
+
     }
   };
 
@@ -45,11 +50,15 @@ const ChampCard = (champ: Champ) => {
             </div>
             <Switch
               checked={activeSkinId === skin.FilePath}
-              onCheckedChange={() => {
-                console.log(skin)
-                handleToggle(skin.FilePath)
+              onCheckedChange={(checked) => {
+                if (checked) {
+                  handleToggle(skin.FilePath)
+                } else {
+                  handleToggle(skin.FilePath)
+                }
               }}
             />
+
           </div>
         ))}
       </div>

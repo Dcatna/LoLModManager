@@ -1,4 +1,4 @@
-import { LogOutIcon, Box, LogIn, Link, ListIcon, LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon, Settings } from 'lucide-react'
+import { LogOutIcon, Box, LogIn, Link, ListIcon, LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon, Settings, PlayIcon } from 'lucide-react'
 import React from 'react'
 import { SidebarHeader, SidebarContent, SidebarGroup, SidebarMenu, SidebarFooter, SidebarMenuButton, SidebarMenuItem, useSidebar, Sidebar } from './ui/sidebar'
 import { cn } from '@/lib/utils';
@@ -7,6 +7,8 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { useTheme } from './Theme';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { RunPatcher } from "../../wailsjs/go/main/App";
+
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -55,9 +57,10 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarHeader className="">
           <ModeToggle />
           {/* ADD  SETTIGNS AND SEARCH*/}
-          <SidebarItem name={'Settings'} icon={Settings} onClick={() => navigate("/settings")} selected={location.pathname.includes("settings")}/>
-          <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/legends")} selected={location.pathname.includes("legends")}/>
-          <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")} selected={location.pathname.includes("skins")}/>
+          <SidebarItem name={"Run Patcher"} icon={PlayIcon} onClick={() => RunPatcher()} className='hover:bg-accent' />
+          <SidebarItem name={'Settings'} icon={Settings} onClick={() => navigate("/settings")} selected={location.pathname.includes("settings")} className='hover:bg-accent'/>
+          <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/legends")} selected={location.pathname.includes("legends")} className='hover:bg-accent'/>
+          <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")} selected={location.pathname.includes("skins")} className='hover:bg-accent'/>
       </SidebarHeader>
 
       <SidebarContent className=" space-y-4">
