@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-sidebar: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-slide-out-to-right: slideOutToRight 0.3s ease-in-out forwards;
+  --animate-slide-in-from-right: slideInFromRight 0.3s ease-in-out forwards;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+
+    to {
+      height: 0;
+    }
+  }
+
+  @keyframes slideOutToRight {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  @keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+}
+@layer base {
+
+  :root {
+    --background: 258 14% 95%;
+    --foreground: 258 5% 10%;
+    --card: 258 14% 90%;
+    --card-foreground: 258 5% 15%;
+    --popover: 258 14% 95%;
+    --popover-foreground: 258 95% 10%;
+    --primary: 258 50% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 258 14% 70%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 220 14% 85%;
+    --muted-foreground: 258 5% 40%;
+    --accent: 220 14% 80%;
+    --accent-foreground: 258 5% 15%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 258 5% 90%;
+    --border: 258 20% 63%;
+    --input: 258 20% 50%;
+    --ring: 258 50% 38%;
+    --radius: 0.5rem;
+   }
+  .dark {
+    --background: 258 14% 10%;
+    --foreground: 258 5% 90%;
+    --card: 258 14% 10%;
+    --card-foreground: 258 5% 90%;
+    --popover: 258 14% 5%;
+    --popover-foreground: 258 5% 90%;
+    --primary: 258 50% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 258 14% 20%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 14% 25%;
+    --muted-foreground: 258 5% 63%;
+    --accent: 220 14% 25%;
+    --accent-foreground: 258 5% 90%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 258 5% 90%;
+    --border: 258 20% 50%;
+    --input: 258 20% 50%;
+    --ring: 258 50% 38%;
+    --radius: 0.5rem;
+   }
+   
+}
+
+
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+  }
+}
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}

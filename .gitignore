@@ -1,0 +1,10 @@
+build/bin
+node_modules
+frontend/dist
+
+.db
+
+skins/
+
+installed/
+tools/hashes.game.txt
