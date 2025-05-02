@@ -2,6 +2,7 @@ package main
 
 import (
 	"LoLModManager/db"
+	"LoLModManager/util"
 	"context"
 	"fmt"
 	"io"
@@ -12,10 +13,9 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"LoLModManager/util"
+
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/mattn/go-sqlite3"
-	ps "github.com/mitchellh/go-ps"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -89,6 +89,12 @@ func (a *App) RunPatcher(activeSkins []string) {
 		AddVArg(fmt.Sprintf("--mods:%s", skins))
 
 	cmderMk.WithOutFn(func(b []byte) (int, error) {
+		line := string(b)
+		fmt.Print("mkoverlay output: ", line)
+		return len(b), nil
+	})
+
+	cmderMk.WithErrFn(func(b []byte) (int, error) {
 		line := string(b)
 		fmt.Print("mkoverlay output: ", line)
 		return len(b), nil
@@ -212,8 +218,9 @@ func (a *App) GetSetting(key string) (string, error) {
 
 func (a *App) FindLeaugeDownload() (string, error) {
 	var folderPath string
-	var wantedFolder = "League of Legends/Game"
-	err := filepath.WalkDir("C:\\Riot Games\\", func(path string, d os.DirEntry, err error) error {
+	var wantedFolder = "Game"
+	err := filepath.WalkDir("C:\\Riot Games\\League of Legends\\", func(path string, d os.DirEntry, err error) error {
+
 		if err != nil {
 			return err
 		}
