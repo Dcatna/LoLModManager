@@ -1,32 +1,19 @@
 import { useState, useEffect } from "react";
 import { useStateProducerT } from "@/lib/utils";
 import { DownloadedSkin} from "@/Types/types";
-import type { ChampCard } from "@/Types/types";
+import { ChampCardProp } from "@/Types/types";
 import { FetchSkinsForChampionById, EnableSkin, DisableSkin } from "../../wailsjs/go/main/App";
 import { Switch } from "@/components/ui/switch";
+import { useSkinContext } from "../SkinContext";
 
-const ChampCard = (champ: ChampCard) => {
+const ChampCard = (champ: ChampCardProp) => {
   const { loading, error, value: skins } = useStateProducerT<DownloadedSkin[]>([], async (update) => {
     const data = await FetchSkinsForChampionById(champ.ID);
     console.log(data)
     update(data);
   });
+  const { activeSkins, updateActiveSkins } = useSkinContext();
 
-  const [activeSkinId, setActiveSkinId] = useState<string | null>(null);
-
-  const handleToggle =  async (filePath: string) => {
-    console.log(activeSkinId)
-    if (activeSkinId === filePath) {
-      await DisableSkin(filePath)
-      setActiveSkinId(null)
-      champ.updateActiveSkins(filePath, "remove")
-    } else {
-      await EnableSkin(filePath)
-      setActiveSkinId(filePath)
-      champ.updateActiveSkins(filePath, "add")
-
-    }
-  };
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
@@ -49,16 +36,17 @@ const ChampCard = (champ: ChampCard) => {
               <p className="text-md">{skin.Name}</p>
             </div>
             <Switch
-              checked={activeSkinId === skin.FilePath}
-              onCheckedChange={(checked) => {
+              checked={activeSkins.includes(skin.Name)}
+              onCheckedChange={async (checked) => {
                 if (checked) {
-                  handleToggle(skin.FilePath)
+                  await EnableSkin(skin.Name);
+                  updateActiveSkins(skin.Name, "add");
                 } else {
-                  handleToggle(skin.FilePath)
+                  await DisableSkin(skin.Name);
+                  updateActiveSkins(skin.Name, "remove");
                 }
               }}
             />
-
           </div>
         ))}
       </div>
