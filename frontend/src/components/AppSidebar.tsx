@@ -8,6 +8,7 @@ import { Card } from './ui/card';
 import { useTheme } from './Theme';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RunPatcher } from "../../wailsjs/go/main/App";
+import { useSkinContext } from '@/SkinContext';
 
 
 
@@ -44,9 +45,11 @@ export function SidebarItem(props: SidebarProps) {
   );
 }
 
-const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+export const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
   const navigate = useNavigate()
   const location = useLocation();
+  const { activeSkins, updateActiveSkins } = useSkinContext();
+  
   return (
     <Sidebar
       {...props}
@@ -57,7 +60,7 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       <SidebarHeader className="">
           <ModeToggle />
           {/* ADD  SETTIGNS AND SEARCH*/}
-          <SidebarItem name={"Run Patcher"} icon={PlayIcon} onClick={() => RunPatcher()} className='hover:bg-accent' />
+          <SidebarItem name={"Run Patcher"} icon={PlayIcon} onClick={() => RunPatcher(activeSkins)} className='hover:bg-accent' />
           <SidebarItem name={'Settings'} icon={Settings} onClick={() => navigate("/settings")} selected={location.pathname.includes("settings")} className='hover:bg-accent'/>
           <SidebarItem name={'Legends'} icon={PersonStandingIcon} onClick={() => navigate("/legends")} selected={location.pathname.includes("legends")} className='hover:bg-accent'/>
           <SidebarItem name={'Find Skins'} icon={DownloadIcon} onClick={() => navigate("/find_skins")} selected={location.pathname.includes("skins")} className='hover:bg-accent'/>
@@ -109,5 +112,3 @@ function ModeToggle() {
   );
 }
 
-
-export default AppSidebar

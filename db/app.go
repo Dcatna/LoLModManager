@@ -91,25 +91,25 @@ func getSkinFolderName(filename string) string {
 }
 
 func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, skinName string) error {
-	// Step 1: Download .fantome to ./installed
 	actualFilename, err := DownloadFile(downloadURL, saveName)
 	if err != nil {
 		return err
 	}
+	fmt.Printf("actualFilename: [%s]\n", actualFilename)
 
-	// Step 2: Build full path to the downloaded .fantome file
 	fantomePath := filepath.Join("installed", actualFilename)
 
-	// Step 3: Extract and build .wad into installed/<modName>
-	err = EnableFantomeSkin(fantomePath, "installed")
+	err = EnableSkin(fantomePath)
 	if err != nil {
 		return err
 	}
 
-	// Step 4: Record the skin path for later use
+	err = os.Remove(fantomePath)
+	if err != nil {
+		return err
+	}
 	skinInstallPath := filepath.Join("installed", getSkinFolderName(actualFilename))
 
-	// Step 5: Insert into DB and link to champions
 	skinID, err := db.InsertSkin(skinName, skinInstallPath)
 	if err != nil {
 		return err
@@ -117,7 +117,6 @@ func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, 
 
 	return db.LinkSkinToChampions(skinID, characters)
 }
-
 
 func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
 	query := `

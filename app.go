@@ -91,26 +91,32 @@ func (a *App) RunCSLOLInjector() error {
 	return nil
 }
 
-func WriteProfileFile(modNames []string, profilePath string) error {
-	content := strings.Join(modNames, "/")
-	return os.WriteFile(profilePath, []byte(content), 0644)
-}
+func (a *App) RunPatcher(activeSkins []string) error {
+	fmt.Println(activeSkins)
+	skins := strings.Join(activeSkins, "/")
+	fmt.Println(skins)
+	gameDir, err := a.db.GetSetting("league_path")
+	if err != nil {
+		return err
+	}
+	fmt.Println(gameDir, "GMAE")
+	installDir := "./installed"
+	profileDir := "./profiles/Defualt Profile"
+	modToolsPath := "./tools/mod-tools.exe"
+	err = BuildOverlay(modToolsPath, installDir, profileDir, gameDir, skins)
+	if err != nil {
+		return err
+	}
 
-func (a *App) RunPatcher() error {
-	// gameDir, err := a.db.GetSetting("league_path")
-	// if err != nil {
-	// 	return err
-	// }
-
-	// installDir := "./installed"
-	// profileDir := "./profiles/Defualt Profile"
-	// modToolsPath := "./tools/mod-tools.exe"
-
+	err = a.RunCSLOLInjector()
+	if err != nil {
+		return err
+	}
+	
 	return nil
 }
 
-func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, selectedMods []string) error {
-	modsArg := strings.Join(selectedMods, "/")
+func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, selectedMods string) error {
 
 	cmd := exec.Command(
 		modToolsPath,
@@ -118,7 +124,7 @@ func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, select
 		installedDir,
 		profileDir,
 		fmt.Sprintf("--game:%s", gameDir),
-		fmt.Sprintf("--mods:%s", modsArg),
+		fmt.Sprintf("--mods:%s", selectedMods),
 	)
 
 	cmd.Stdout = os.Stdout
@@ -132,6 +138,7 @@ func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, select
 
 	return nil
 }
+
 
 func (a *App) DownloadSkin(downloadURL, saveName string, champions []db.Champion, skinName string) error {
 	return a.db.DownloadSkin(downloadURL, saveName, champions, skinName)
@@ -151,7 +158,7 @@ func (a *App) GetSetting(key string) (string, error) {
 
 func (a *App) FindLeaugeDownload() (string, error) {
 	var folderPath string
-	var wantedFolder = "League of Legends"
+	var wantedFolder = "League of Legends/Game"
 	err := filepath.WalkDir("C:\\Riot Games\\", func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err

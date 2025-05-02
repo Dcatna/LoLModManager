@@ -58,8 +58,8 @@ export function RunCSLOLInjector() {
   return window['go']['main']['App']['RunCSLOLInjector']();
 }
 
-export function RunPatcher() {
-  return window['go']['main']['App']['RunPatcher']();
+export function RunPatcher(arg1) {
+  return window['go']['main']['App']['RunPatcher'](arg1);
 }
 
 export function SetSetting(arg1, arg2) {

@@ -36,14 +36,14 @@ const ChampCard = (champ: ChampCardProp) => {
               <p className="text-md">{skin.Name}</p>
             </div>
             <Switch
-              checked={activeSkins.includes(skin.Name)}
+              checked={activeSkins.includes(skin.FilePath.split("\\")[1])}
               onCheckedChange={async (checked) => {
                 if (checked) {
-                  await EnableSkin(skin.Name);
-                  updateActiveSkins(skin.Name, "add");
+                  await EnableSkin(skin.FilePath.split("\\")[1]);
+                  updateActiveSkins(skin.FilePath.split("\\")[1], "add");
                 } else {
-                  await DisableSkin(skin.Name);
-                  updateActiveSkins(skin.Name, "remove");
+                  await DisableSkin(skin.FilePath.split("\\")[1]);
+                  updateActiveSkins(skin.FilePath.split("\\")[1], "remove");
                 }
               }}
             />

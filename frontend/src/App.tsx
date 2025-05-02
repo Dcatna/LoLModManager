@@ -1,10 +1,10 @@
 import { GetChampions } from  "../wailsjs/go/main/App"; // path may vary based on setup
 import { useEffect, useState } from 'react';
 import { ThemeProvider } from "./components/Theme";
-import AppSidebar from "./components/AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import { SkinProvider } from "./SkinContext";
+import { AppSidebar } from "./components/AppSidebar";
 
 function App() {
 

@@ -2,12 +2,11 @@ package db
 
 import (
 	"archive/zip"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 type ModManifest struct {
@@ -16,68 +15,67 @@ type ModManifest struct {
 	Mappings map[string]string `json:"mappings"`
 }
 
-func EnableFantomeSkin(fantomePath, installedDir string) error {
-	fmt.Println("Installing skin from:", fantomePath)
+func EnableSkin(fantomePath string) error {
+	// Step 1: get the base skin folder name (no extension)
+	baseName := strings.TrimSuffix(filepath.Base(fantomePath), filepath.Ext(fantomePath))
+	skinFolder := filepath.Join("installed", baseName)
 
-	// Step 1: Extract to a temp directory
-	tempDir := filepath.Join(os.TempDir(), "fantome_temp")
-	os.RemoveAll(tempDir)
-	os.MkdirAll(tempDir, 0755)
-
-	if err := unzip(fantomePath, tempDir); err != nil {
-		return fmt.Errorf("failed to unzip: %w", err)
-	}
-
-	// Step 2: Read META/info.json
-	infoPath := filepath.Join(tempDir, "META", "info.json")
-	infoBytes, err := os.ReadFile(infoPath)
+	// Step 2: open the fantome zip
+	r, err := zip.OpenReader(fantomePath)
 	if err != nil {
-		return fmt.Errorf("META/info.json not found: %w", err)
+		return err
 	}
 
-	var manifest ModManifest
-	if err := json.Unmarshal(infoBytes, &manifest); err != nil {
-		return fmt.Errorf("invalid info.json: %w", err)
-	}
+	// Step 3: extract each file into skinFolder
+	for _, file := range r.File {
+		destPath := filepath.Join(skinFolder, file.Name)
 
-	// Step 3: Create target mod folder in installed/
-	modInstallDir := filepath.Join(installedDir, manifest.Name)
-	os.RemoveAll(modInstallDir)
-	os.MkdirAll(modInstallDir, 0755)
+		if file.FileInfo().IsDir() {
+			err := os.MkdirAll(destPath, os.ModePerm)
+			if err != nil {
+				_ = r.Close() // close before return
+				return err
+			}
+			continue
+		} else {
+			err := os.MkdirAll(filepath.Dir(destPath), os.ModePerm)
+			if err != nil {
+				_ = r.Close()
+				return err
+			}
+		}
 
-	// Step 4: Copy all extracted files into installed/<modName>/
-	err = filepath.Walk(tempDir, func(path string, info os.FileInfo, err error) error {
+		src, err := file.Open()
 		if err != nil {
+			_ = r.Close()
 			return err
 		}
-		relPath, _ := filepath.Rel(tempDir, path)
-		destPath := filepath.Join(modInstallDir, relPath)
 
-		if info.IsDir() {
-			return os.MkdirAll(destPath, 0755)
+		dst, err := os.Create(destPath)
+		if err != nil {
+			_ = src.Close()
+			_ = r.Close()
+			return err
 		}
-		return copyFile(path, destPath)
-	})
+
+		_, err = io.Copy(dst, src)
+
+		_ = dst.Close()
+		_ = src.Close()
+
+		if err != nil {
+			_ = r.Close()
+			return err
+		}
+	}
+
+	// ✅ Step 4: now that zip is fully extracted, we can close it
+	err = r.Close()
 	if err != nil {
-		return fmt.Errorf("failed to copy extracted files: %w", err)
+		return err
 	}
 
-	// Step 5: Run wad-make on the WAD folder
-	wadInput := filepath.Join(modInstallDir, "WAD")
-	wadOutput := filepath.Join(modInstallDir, manifest.Name+".wad.client")
-
-	wadMake := filepath.Join(".", "tools", "wad-make.exe")
-
-	cmd := exec.Command(wadMake, "-i", wadInput, "-o", wadOutput)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Running wad-make...")
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("wad-make failed: %w", err)
-	}
-
-	fmt.Println("Installed mod into:", modInstallDir)
+	fmt.Println("Skin extracted to:", skinFolder)
 	return nil
 }
 
