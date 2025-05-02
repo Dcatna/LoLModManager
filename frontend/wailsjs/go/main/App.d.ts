@@ -8,8 +8,6 @@ export function DisableSkin(arg1:string):Promise<void>;
 
 export function DownloadSkin(arg1:string,arg2:string,arg3:Array<db.Champion>,arg4:string):Promise<void>;
 
-export function EnableSkin(arg1:string):Promise<void>;
-
 export function FetchSkinsForChampionById(arg1:string):Promise<Array<db.DownloadedSkin>>;
 
 export function FindLeaugeDownload():Promise<string>;

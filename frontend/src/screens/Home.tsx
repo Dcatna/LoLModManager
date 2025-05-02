@@ -22,7 +22,7 @@ const Home = (props: Props) => {
     }
   }
   
-  
+
   console.log(activeSkins)
 
   return (

@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-
+	"LoLModManager/util"
 	"github.com/PuerkitoBio/goquery"
 	_ "github.com/mattn/go-sqlite3"
 	ps "github.com/mitchellh/go-ps"
@@ -44,37 +44,6 @@ func (a *App) startup(ctx context.Context) {
 		runtime.LogError(ctx, "Failed to seed: "+err.Error())
 	}
 
-	// fmt.Println("Finding league start")
-	// go func() {
-	// 	injected := false
-	// 	for {
-	// 		if isLeagueRunning() && !injected {
-	// 			fmt.Println("Injecting cslol injector")
-	// 			err = a.RunCSLOLInjector()
-	// 			if err != nil {
-	// 				runtime.LogError(ctx, "Failed to run cslol-injector: "+err.Error())
-	// 			} else {
-	// 				fmt.Println("Injector launched")
-	// 				injected = true
-	// 			}
-	// 		}
-	// 		if !isLeagueRunning() {
-	// 			fmt.Println("League Closed")
-	// 			injected = false
-	// 		}
-	// 	}
-	// }()
-
-}
-
-func isLeagueRunning() bool {
-	procs, _ := ps.Processes()
-	for _, p := range procs {
-		if p.Executable() == "League of Legends.exe" {
-			return true
-		}
-	}
-	return false
 }
 
 func (a *App) RunCSLOLInjector() error {
@@ -91,50 +60,74 @@ func (a *App) RunCSLOLInjector() error {
 	return nil
 }
 
-func (a *App) RunPatcher(activeSkins []string) error {
-	fmt.Println(activeSkins)
-	err := WriteProfileFile(activeSkins)
-	if err != nil {
-		return err
+func (a *App) RunPatcher(activeSkins []string) {
+	fmt.Println("skins:", activeSkins)
+	if err := WriteProfileFile(activeSkins); err != nil {
+		fmt.Println("failed to write profile file:", err)
+		return
 	}
-
 	skins := strings.Join(activeSkins, "/")
-	fmt.Println(skins)
+
 	gameDir, err := a.db.GetSetting("league_path")
 	if err != nil {
-		return err
+		fmt.Println("failed to get league path:", err)
+		return
 	}
 
-	fmt.Println(gameDir, "GAME")
 	installDir := "./installed"
 	profileDir := "./installed/Default Profile"
-	modToolsPath := "./tools/mod-tools.exe"
+	modToolsPath := "tools/mod-tools.exe"
+	configPath := "profiles/Default Profile.config"
 
-	err = BuildOverlay(modToolsPath, installDir, profileDir, gameDir, skins)
-	if err != nil {
-		return err
+	cmdCtx := context.Background()
+	cmderMk := util.NewCmder(modToolsPath, cmdCtx).
+		SetDir(".").
+		AddVArg("mkoverlay").
+		AddVArg(installDir).
+		AddVArg(profileDir).
+		AddVArg(fmt.Sprintf("--game:%s", gameDir)).
+		AddVArg(fmt.Sprintf("--mods:%s", skins))
+
+	cmderMk.WithOutFn(func(b []byte) (int, error) {
+		line := string(b)
+		fmt.Print("mkoverlay output: ", line)
+		return len(b), nil
+	})
+
+	if err := cmderMk.Run(nil); err != nil {
+		fmt.Println("mkoverlay failed:", err)
+		return
 	}
+	fmt.Println("mkoverlay completed")
 
-	done := make(chan struct{})
-	ctx, cancel := context.WithCancel(context.Background())
+	ctxRun := context.Background()
+	cmderRun := util.NewCmder(modToolsPath, ctxRun).
+		SetDir(".").
+		AddVArg("runoverlay").
+		AddVArg(profileDir).
+		AddVArg(configPath).
+		AddVArg(fmt.Sprintf("--game:%s", gameDir))
 
-	go func() {
-		defer close(done)
-		defer cancel()
+	cmderRun.WithOutFn(func(b []byte) (int, error) {
+		line := string(b)
+		fmt.Print("runoverlay: ", line)
 
-		fmt.Println("Starting mod-tools")
-		err := RunOverlay(modToolsPath, gameDir, profileDir)
-		if err != nil {
-			fmt.Println("mod-tools failed:", err)
-		} else {
-			fmt.Println(" mod-tools finished successfully")
-		}
-	}()
+		return len(b), nil
+	})
 
-	<-done
-	<-ctx.Done()
+	cmderRun.WithErrFn(func(b []byte) (int, error) {
+		line := string(b)
+		fmt.Print("runoverlay err: ", line)
+		return len(b), nil
+	})
 
-	return nil
+	fmt.Println("launching runoverlay and waiting for it to finish...")
+	err = cmderRun.Run(nil)
+	if err != nil {
+		fmt.Println("runoverlay failed:", err)
+		return
+	}
+	fmt.Println("injection completed successfully")
 }
 
 func WriteProfileFile(skinNames []string) error {
