@@ -16,24 +16,21 @@ type ModManifest struct {
 }
 
 func EnableSkin(fantomePath string) error {
-	// Step 1: get the base skin folder name (no extension)
 	baseName := strings.TrimSuffix(filepath.Base(fantomePath), filepath.Ext(fantomePath))
 	skinFolder := filepath.Join("installed", baseName)
 
-	// Step 2: open the fantome zip
 	r, err := zip.OpenReader(fantomePath)
 	if err != nil {
 		return err
 	}
 
-	// Step 3: extract each file into skinFolder
 	for _, file := range r.File {
 		destPath := filepath.Join(skinFolder, file.Name)
 
 		if file.FileInfo().IsDir() {
 			err := os.MkdirAll(destPath, os.ModePerm)
 			if err != nil {
-				_ = r.Close() // close before return
+				_ = r.Close()
 				return err
 			}
 			continue
@@ -69,7 +66,6 @@ func EnableSkin(fantomePath string) error {
 		}
 	}
 
-	// ✅ Step 4: now that zip is fully extracted, we can close it
 	err = r.Close()
 	if err != nil {
 		return err

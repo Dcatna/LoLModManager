@@ -79,7 +79,7 @@ func isLeagueRunning() bool {
 
 func (a *App) RunCSLOLInjector() error {
 	injectorPath := "./cslol-patcher/cslol-inj.exe"
-	profilePath := "./profiles/Default Profiles"
+	profilePath := "./profiles/Default Profile/"
 
 	cmd := exec.Command(injectorPath, profilePath)
 	err := cmd.Start()
@@ -93,26 +93,66 @@ func (a *App) RunCSLOLInjector() error {
 
 func (a *App) RunPatcher(activeSkins []string) error {
 	fmt.Println(activeSkins)
+	err := WriteProfileFile(activeSkins)
+	if err != nil {
+		return err
+	}
+
 	skins := strings.Join(activeSkins, "/")
 	fmt.Println(skins)
 	gameDir, err := a.db.GetSetting("league_path")
 	if err != nil {
 		return err
 	}
-	fmt.Println(gameDir, "GMAE")
+
+	fmt.Println(gameDir, "GAME")
 	installDir := "./installed"
-	profileDir := "./profiles/Defualt Profile"
+	profileDir := "./installed/Default Profile"
 	modToolsPath := "./tools/mod-tools.exe"
+
 	err = BuildOverlay(modToolsPath, installDir, profileDir, gameDir, skins)
 	if err != nil {
 		return err
 	}
 
-	err = a.RunCSLOLInjector()
+	done := make(chan struct{})
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func() {
+		defer close(done)
+		defer cancel()
+
+		fmt.Println("Starting mod-tools")
+		err := RunOverlay(modToolsPath, gameDir, profileDir)
+		if err != nil {
+			fmt.Println("mod-tools failed:", err)
+		} else {
+			fmt.Println(" mod-tools finished successfully")
+		}
+	}()
+
+	<-done
+	<-ctx.Done()
+
+	return nil
+}
+
+func WriteProfileFile(skinNames []string) error {
+	profileDir := "profiles"
+	err := os.MkdirAll(profileDir, os.ModePerm)
 	if err != nil {
 		return err
 	}
-	
+
+	profilePath := filepath.Join(profileDir, "Default Profile.profile")
+
+	content := strings.Join(skinNames, "\n")
+
+	err = os.WriteFile(profilePath, []byte(content), 0644)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -139,6 +179,27 @@ func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, select
 	return nil
 }
 
+func RunOverlay(modTooslPath string, gameDir string, profileDir string) error {
+	config := "profiles/Default Profile.config"
+	fmt.Println(config, "CONGID")
+	cmd := exec.Command(
+		modTooslPath,
+		"runoverlay",
+		profileDir,
+		config,
+		fmt.Sprintf("--game:%s", gameDir),
+	)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Println("Running:", cmd.String())
+
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("mod-tools mkoverlay failed: %w", err)
+	}
+
+	return nil
+}
 
 func (a *App) DownloadSkin(downloadURL, saveName string, champions []db.Champion, skinName string) error {
 	return a.db.DownloadSkin(downloadURL, saveName, champions, skinName)
