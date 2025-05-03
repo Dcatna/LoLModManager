@@ -75,7 +75,7 @@ func (a *App) RunPatcher(activeSkins []string) {
 	}
 
 	installDir := "./installed"
-	profileDir := "./installed/Default Profile"
+	profileDir := "./profiles/Default Profile"
 	modToolsPath := "tools/mod-tools.exe"
 	configPath := "profiles/Default Profile.config"
 
@@ -281,37 +281,12 @@ func (a *App) OpenDirectoryDialog(display string, filters []string) (string, err
 }
 
 func (a *App) EnableSkin(filePath string) error {
-	// destDir := "C:\\Riot Games\\League of Legends\\Game\\Mods\\CharacterSkins\\Custom"
-	// baseName := filepath.Base(filePath)
-	// destPath := filepath.Join(destDir, baseName)
 
-	// if err := os.MkdirAll(destDir, 0755); err != nil {
-	// 	return fmt.Errorf("failed to create destination directory: %w", err)
-	// }
-
-	// info, err := os.Stat(filePath)
-	// if err != nil {
-	// 	fmt.Println("File stat error:", err)
-	// 	return err
-	// }
-	// fmt.Println("File exists?", filePath, info.IsDir())
-
-	// if info.IsDir() {
-	// 	fmt.Println("Copying directory:", filePath)
-	// 	return copyDir(filePath, destPath)
-	// } else {
-	// 	fmt.Println("Copying file:", filePath)
-	// 	return copyFile(filePath, destPath)
-	// }
-	return nil
+	return a.db.SetSkinActive(filePath, true)
 }
 
 func (a *App) DisableSkin(filePath string) error {
-	destDir := "C:\\Riot Games\\League of Legends\\Game\\Mods\\CharacterSkins\\Custom"
-	baseName := filepath.Base(filePath)
-	targetPath := filepath.Join(destDir, baseName)
-
-	return os.RemoveAll(targetPath)
+	return a.db.SetSkinActive(filePath, false)
 }
 func copyDir(src string, dst string) error {
 	entries, err := os.ReadDir(src)

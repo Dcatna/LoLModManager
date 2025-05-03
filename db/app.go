@@ -28,6 +28,31 @@ func (a *App) SeedChampions(ctx context.Context) error {
 	return a.db.SeedChampions()
 }
 
+func (db *DB) SetSkinActive(skinName string, active bool) error {
+	val := 0
+	if active {
+		val = 1
+	}
+	_, err := db.conn.Exec("UPDATE skins SET is_active = ? WHERE name = ?", val, skinName)
+	return err
+}
+
+func (db *DB) GetActiveSkins() ([]string, error) {
+	rows, err := db.conn.Query("SELECT name FROM skins WHERE is_active = 1")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var skins []string
+	for rows.Next() {
+		var name string
+		rows.Scan(&name)
+		skins = append(skins, name)
+	}
+	return skins, nil
+}
+
 func DownloadFile(url string, saveName string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -120,7 +145,7 @@ func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, 
 
 func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
 	query := `
-		SELECT skins.id, skins.name, skins.file_path
+		SELECT skins.id, skins.name, skins.file_path, s.is_active
 		FROM skins
 		INNER JOIN skin_champions ON skins.id = skin_champions.skin_id
 		WHERE skin_champions.champion_id = ?
@@ -135,7 +160,7 @@ func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
 	var skins []DownloadedSkin
 	for rows.Next() {
 		var skin DownloadedSkin
-		if err := rows.Scan(&skin.ID, &skin.Name, &skin.FilePath); err != nil {
+		if err := rows.Scan(&skin.ID, &skin.Name, &skin.FilePath, &skin.IsActive); err != nil {
 			return nil, err
 		}
 		skins = append(skins, skin)

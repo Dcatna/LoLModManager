@@ -44,7 +44,9 @@ func createSkinsTable(db *sql.DB) {
 	CREATE TABLE IF NOT EXISTS skins (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name TEXT NOT NULL UNIQUE,
-		file_path TEXT NOT NULL
+		file_path TEXT NOT NULL,
+		is_active INTEGER DEFAULT 0 -- 0 = inactive, 1 = active
+
 	)
 	`
 	_, err := db.Exec(createTableSQL)

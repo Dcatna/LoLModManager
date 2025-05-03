@@ -14,11 +14,12 @@ export type ChampCardProp = {
   };
   
 
-export interface DownloadedSkin {
-	ID: string,
-	Name: string,
-	FilePath: string
-}
+// export interface DownloadedSkin {
+// 	ID: string,
+// 	Name: string,
+// 	FilePath: string,
+// 	isActive: number
+// }
 
 export interface Skins {
     ID:       string

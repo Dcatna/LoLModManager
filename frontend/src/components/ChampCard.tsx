@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
 import { useStateProducerT } from "@/lib/utils";
-import { DownloadedSkin} from "@/Types/types";
+// import { DownloadedSkin} from "@/Types/types";
+import { db } from '../../wailsjs/go/models'
+
 import { ChampCardProp } from "@/Types/types";
 import { FetchSkinsForChampionById, EnableSkin, DisableSkin } from "../../wailsjs/go/main/App";
 import { Switch } from "@/components/ui/switch";
 import { useSkinContext } from "../SkinContext";
 
 const ChampCard = (champ: ChampCardProp) => {
-  const { loading, error, value: skins } = useStateProducerT<DownloadedSkin[]>([], async (update) => {
+  const { loading, error, value: skins } = useStateProducerT<db.DownloadedSkin[]>([], async (update) => {
     const data = await FetchSkinsForChampionById(champ.ID);
     console.log(data)
     update(data);
   });
+
   const { activeSkins, updateActiveSkins } = useSkinContext();
 
 
@@ -31,19 +34,19 @@ const ChampCard = (champ: ChampCardProp) => {
       <div className="flex-1 grid grid-cols-1 gap-4">
 
         {skins?.map((skin) => (
-          <div key={skin.ID} className="flex items-center justify-between p-2 border rounded">
+          <div key={skin.id} className="flex items-center justify-between p-2 border rounded">
             <div>
-              <p className="text-md">{skin.Name}</p>
+              <p className="text-md">{skin.name}</p>
             </div>
             <Switch
-              checked={activeSkins.includes(skin.FilePath.split("\\")[1])}
+              checked={skin.isActive === 1}
               onCheckedChange={async (checked) => {
                 if (checked) {
-                  await EnableSkin(skin.FilePath.split("\\")[1]);
-                  updateActiveSkins(skin.FilePath.split("\\")[1], "add");
+                  await EnableSkin(skin.file_path.split("\\")[1]);
+                  updateActiveSkins(skin.file_path.split("\\")[1], "add");
                 } else {
-                  await DisableSkin(skin.FilePath.split("\\")[1]);
-                  updateActiveSkins(skin.FilePath.split("\\")[1], "remove");
+                  await DisableSkin(skin.file_path.split("\\")[1]);
+                  updateActiveSkins(skin.file_path.split("\\")[1], "remove");
                 }
               }}
             />

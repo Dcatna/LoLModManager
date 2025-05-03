@@ -19,9 +19,10 @@ export namespace db {
 	    }
 	}
 	export class DownloadedSkin {
-	    ID: string;
-	    Name: string;
-	    FilePath: string;
+	    id: string;
+	    name: string;
+	    file_path: string;
+	    isActive: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new DownloadedSkin(source);
@@ -29,9 +30,10 @@ export namespace db {
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.ID = source["ID"];
-	        this.Name = source["Name"];
-	        this.FilePath = source["FilePath"];
+	        this.id = source["id"];
+	        this.name = source["name"];
+	        this.file_path = source["file_path"];
+	        this.isActive = source["isActive"];
 	    }
 	}
 	export class Gallery {

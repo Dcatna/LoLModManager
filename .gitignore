@@ -5,7 +5,6 @@ frontend/dist
 .db
 
 skins/
-
 installed/
-profile/
+profiles/
 tools/hashes.game.txt

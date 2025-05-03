@@ -8,9 +8,10 @@ type Champion struct {
 }
 
 type DownloadedSkin struct {
-	ID       string
-	Name     string
-	FilePath string
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	FilePath string `json:"file_path"`
+	IsActive int    `json:"isActive"`
 }
 
 type Skins struct {
