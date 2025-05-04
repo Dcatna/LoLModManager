@@ -104,7 +104,7 @@ func (db *DB) LinkSkinToChampions(skinID int64, championIDs []Champion) error {
 	if err != nil {
 		return err
 	}
-	stmt, err := tx.Prepare("INSERT INTO skin_champions (skin_id, champion_id) VALUES (?, ?)")
+	stmt, err := tx.Prepare("INSERT OR IGNORE INTO skin_champions (skin_id, champion_id) VALUES (?, ?)")
 	if err != nil {
 		return err
 	}

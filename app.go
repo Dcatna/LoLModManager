@@ -280,13 +280,13 @@ func (a *App) OpenDirectoryDialog(display string, filters []string) (string, err
 		})
 }
 
-func (a *App) EnableSkin(filePath string) error {
+func (a *App) EnableSkin(skinName string) error {
 
-	return a.db.SetSkinActive(filePath, true)
+	return a.db.SetSkinActive(skinName, true)
 }
 
-func (a *App) DisableSkin(filePath string) error {
-	return a.db.SetSkinActive(filePath, false)
+func (a *App) DisableSkin(skinName string) error {
+	return a.db.SetSkinActive(skinName, false)
 }
 func copyDir(src string, dst string) error {
 	entries, err := os.ReadDir(src)

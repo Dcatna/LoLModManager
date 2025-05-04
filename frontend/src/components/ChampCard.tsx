@@ -14,7 +14,7 @@ const ChampCard = (champ: ChampCardProp) => {
     console.log(data)
     update(data);
   });
-
+  console.log(skins)
   const { activeSkins, updateActiveSkins } = useSkinContext();
 
 
@@ -42,11 +42,13 @@ const ChampCard = (champ: ChampCardProp) => {
               checked={skin.isActive === 1}
               onCheckedChange={async (checked) => {
                 if (checked) {
-                  await EnableSkin(skin.file_path.split("\\")[1]);
-                  updateActiveSkins(skin.file_path.split("\\")[1], "add");
+                  await EnableSkin(skin.name);
+                  updateActiveSkins(skin.file_path.split("\\")[1], "add")
+                  skin.isActive = 1
                 } else {
-                  await DisableSkin(skin.file_path.split("\\")[1]);
-                  updateActiveSkins(skin.file_path.split("\\")[1], "remove");
+                  await DisableSkin(skin.name);
+                  updateActiveSkins(skin.file_path.split("\\")[1], "remove")
+                  skin.isActive = 0
                 }
               }}
             />

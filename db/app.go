@@ -145,7 +145,7 @@ func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, 
 
 func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
 	query := `
-		SELECT skins.id, skins.name, skins.file_path, s.is_active
+		SELECT skins.id, skins.name, skins.file_path, skins.is_active
 		FROM skins
 		INNER JOIN skin_champions ON skins.id = skin_champions.skin_id
 		WHERE skin_champions.champion_id = ?
