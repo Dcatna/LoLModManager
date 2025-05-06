@@ -61,16 +61,15 @@ func (a *App) RunCSLOLInjector() error {
 }
 
 func (a *App) RunPatcher(activeSkins []string) {
-	fmt.Println("skins:", activeSkins)
 	if err := WriteProfileFile(activeSkins); err != nil {
-		fmt.Println("failed to write profile file:", err)
+		runtime.EventsEmit(a.ctx, "patcher:log", "failed to write profile file: "+err.Error())
 		return
 	}
 	skins := strings.Join(activeSkins, "/")
 
 	gameDir, err := a.db.GetSetting("league_path")
 	if err != nil {
-		fmt.Println("failed to get league path:", err)
+		runtime.EventsEmit(a.ctx, "patcher:log", "failed to get League path: "+err.Error())
 		return
 	}
 
@@ -89,22 +88,19 @@ func (a *App) RunPatcher(activeSkins []string) {
 		AddVArg(fmt.Sprintf("--mods:%s", skins))
 
 	cmderMk.WithOutFn(func(b []byte) (int, error) {
-		line := string(b)
-		fmt.Print("mkoverlay output: ", line)
+		runtime.EventsEmit(a.ctx, "patcher:log", string(b))
 		return len(b), nil
 	})
 
 	cmderMk.WithErrFn(func(b []byte) (int, error) {
-		line := string(b)
-		fmt.Print("mkoverlay output: ", line)
+		runtime.EventsEmit(a.ctx, "patcher:log", string(b))
 		return len(b), nil
 	})
 
 	if err := cmderMk.Run(nil); err != nil {
-		fmt.Println("mkoverlay failed:", err)
+		runtime.EventsEmit(a.ctx, "patcher:log", "mkoverlay failed: "+err.Error())
 		return
 	}
-	fmt.Println("mkoverlay completed")
 
 	ctxRun := context.Background()
 	cmderRun := util.NewCmder(modToolsPath, ctxRun).
@@ -115,25 +111,19 @@ func (a *App) RunPatcher(activeSkins []string) {
 		AddVArg(fmt.Sprintf("--game:%s", gameDir))
 
 	cmderRun.WithOutFn(func(b []byte) (int, error) {
-		line := string(b)
-		fmt.Print("runoverlay: ", line)
-
+		runtime.EventsEmit(a.ctx, "patcher:log", string(b))
 		return len(b), nil
 	})
 
 	cmderRun.WithErrFn(func(b []byte) (int, error) {
-		line := string(b)
-		fmt.Print("runoverlay err: ", line)
+		runtime.EventsEmit(a.ctx, "patcher:log", string(b))
 		return len(b), nil
 	})
 
-	fmt.Println("launching runoverlay and waiting for it to finish...")
-	err = cmderRun.Run(nil)
-	if err != nil {
-		fmt.Println("runoverlay failed:", err)
+	if err := cmderRun.Run(nil); err != nil {
+		runtime.EventsEmit(a.ctx, "patcher:log", "runoverlay failed: "+err.Error())
 		return
 	}
-	fmt.Println("injection completed successfully")
 }
 
 func WriteProfileFile(skinNames []string) error {
@@ -150,51 +140,6 @@ func WriteProfileFile(skinNames []string) error {
 	err = os.WriteFile(profilePath, []byte(content), 0644)
 	if err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func BuildOverlay(modToolsPath, installedDir, profileDir, gameDir string, selectedMods string) error {
-
-	cmd := exec.Command(
-		modToolsPath,
-		"mkoverlay",
-		installedDir,
-		profileDir,
-		fmt.Sprintf("--game:%s", gameDir),
-		fmt.Sprintf("--mods:%s", selectedMods),
-	)
-
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Running:", cmd.String())
-
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("mod-tools mkoverlay failed: %w", err)
-	}
-
-	return nil
-}
-
-func RunOverlay(modTooslPath string, gameDir string, profileDir string) error {
-	config := "profiles/Default Profile.config"
-	fmt.Println(config, "CONGID")
-	cmd := exec.Command(
-		modTooslPath,
-		"runoverlay",
-		profileDir,
-		config,
-		fmt.Sprintf("--game:%s", gameDir),
-	)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	fmt.Println("Running:", cmd.String())
-
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("mod-tools mkoverlay failed: %w", err)
 	}
 
 	return nil
