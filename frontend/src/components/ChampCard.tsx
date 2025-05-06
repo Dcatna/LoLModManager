@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useStateProducerT } from "@/lib/utils";
 // import { DownloadedSkin} from "@/Types/types";
 import { db } from '../../wailsjs/go/models'
@@ -19,7 +19,7 @@ const ChampCard = (champ: ChampCardProp) => {
 
 
   return (
-    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
+    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[320px] max-w-[350px]">
       
       <div className="flex flex-col items-center min-w-[150px]">
         <img 
@@ -35,28 +35,68 @@ const ChampCard = (champ: ChampCardProp) => {
 
         {skins?.map((skin) => (
           <div key={skin.id} className="flex items-center justify-between p-2 border rounded">
-            <div>
-              <p className="text-md">{skin.name}</p>
-            </div>
-            <Switch
-              checked={skin.isActive === 1}
-              onCheckedChange={async (checked) => {
-                if (checked) {
-                  await EnableSkin(skin.name);
-                  updateActiveSkins(skin.file_path.split("\\")[1], "add")
-                  skin.isActive = 1
-                } else {
-                  await DisableSkin(skin.name);
-                  updateActiveSkins(skin.file_path.split("\\")[1], "remove")
-                  skin.isActive = 0
-                }
-              }}
-            />
+          <div className="max-w-[140px] overflow-hidden">
+            <TextDisplay text={skin.name} maxWidth={140} />
           </div>
+          <Switch
+            checked={skin.isActive === 1}
+            onCheckedChange={async (checked) => {
+              if (checked) {
+                await EnableSkin(skin.name);
+                updateActiveSkins(skin.file_path.split("\\")[1], "add")
+                skin.isActive = 1;
+              } else {
+                await DisableSkin(skin.name);
+                updateActiveSkins(skin.file_path.split("\\")[1], "remove")
+                skin.isActive = 0;
+              }
+            }}
+          />
+        </div>
         ))}
       </div>
     </div>
   );
 };
+
+const TextDisplay = ({ text, maxWidth }: { text: string; maxWidth: number }) => {
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (textRef.current && containerRef.current) {
+      setIsOverflowing(textRef.current.scrollWidth > containerRef.current.offsetWidth);
+    }
+  }, [text, maxWidth]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="overflow-hidden whitespace-nowrap"
+      style={{ maxWidth, width: maxWidth }}
+    >
+      <div
+        className={`inline-flex ${isOverflowing ? "animate-marquee" : ""}`}
+        style={{ minWidth: isOverflowing ? "200%" : "auto" }}
+      >
+        <span ref={textRef} className="inline-block text-sm pr-8">{text}</span>
+        {isOverflowing && <span className="inline-block text-sm">{text}</span>}
+      </div>
+
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee {
+          animation: marquee 6s linear infinite;
+        }
+      `}</style>
+    </div>
+  );
+};
+
 
 export default ChampCard;
