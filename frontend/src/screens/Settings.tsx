@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FolderOpenIcon } from "lucide-react";
+import PatcherOutput from "@/components/PatcherOutput";
 
 const Settings = () => {
   const [leaguePath, setLeaguePath] = useState("")
@@ -25,6 +26,8 @@ const Settings = () => {
 
   return (
     <div className="p-8 min-h-screen bg-background text-foreground">
+      <PatcherOutput />
+
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
 
       <div className="max-w-xl bg-card rounded-lg shadow p-6 space-y-6">

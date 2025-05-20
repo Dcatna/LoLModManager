@@ -21,22 +21,21 @@ const ChampCard = (champ: ChampCardProp) => {
 
 
   return (
-    <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
-      <Link to={`/champscreen/${champ.Name}`} state={champ}>
-      <div className="flex flex-col items-center min-w-[150px]">
-        <img 
-          src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} 
-          alt={champ.Name} 
-          className="w-24 h-24 rounded-full object-cover mb-2"
-        />
-        <p className="text-lg font-semibold">{champ.Name}</p>
-        <p className="text-gray-500 text-sm">{champ.Tags}</p>
-      </div>
+  <div className="flex flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
+    
+    <Link to={`/champscreen/${champ.Name}`} state={champ} className="flex flex-col items-center min-w-[120px] hover:opacity-80 transition">
+      <img 
+        src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} 
+        alt={champ.Name} 
+        className="w-20 h-20 rounded-full object-cover mb-1"
+      />
+      <p className="text-sm font-semibold text-center">{champ.Name}</p>
+      <p className="text-xs text-gray-500 text-center">{champ.Tags}</p>
+    </Link>
 
-      <div className="flex-1 grid grid-cols-1 gap-4">
-
-        {skins?.map((skin) => (
-          <div key={skin.id} className="flex items-center justify-between p-2 border rounded">
+    <div className="flex-1 grid grid-cols-1 gap-2">
+      {skins?.map((skin) => (
+        <div key={skin.id} className="flex items-center justify-between p-2 border rounded bg-muted">
           <div className="max-w-[140px] overflow-hidden">
             <TextDisplay text={skin.name} maxWidth={140} />
           </div>
@@ -45,21 +44,19 @@ const ChampCard = (champ: ChampCardProp) => {
             onCheckedChange={async (checked) => {
               if (checked) {
                 await EnableSkin(skin.name);
-                updateActiveSkins(skin.file_path.split("\\")[1], "add")
+                updateActiveSkins(skin.file_path.split("\\")[1], "add");
                 skin.isActive = 1;
               } else {
                 await DisableSkin(skin.name);
-                updateActiveSkins(skin.file_path.split("\\")[1], "remove")
+                updateActiveSkins(skin.file_path.split("\\")[1], "remove");
                 skin.isActive = 0;
               }
             }}
           />
         </div>
-
-        ))}
-      </div>
-      </Link> 
+      ))}
     </div>
+  </div>
     
   );
 };

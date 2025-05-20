@@ -16,6 +16,7 @@ import { SidebarItem } from '@/components/AppSidebar';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@headlessui/react';
+import PatcherOutput from '@/components/PatcherOutput';
 
 
 
@@ -32,8 +33,9 @@ const PreviewSkin = () => {
 
   return (
     <div className="flex w-full justify-center p-8 min-h-screen bg-background text-foreground overflow-y-auto">
+    <PatcherOutput />
+
       <div className="flex flex-col items-center w-full max-w-5xl gap-8">
-        {/* Top Card */}
         <div className="flex flex-col md:flex-row bg-card rounded-xl shadow-md p-6 gap-6 w-full">
   <div className="flex-shrink-0">
     <img 
@@ -88,7 +90,6 @@ const PreviewSkin = () => {
   </div>
 </div>
 
-        {/* Gallery Section */}
         {value?.Gallery ? (
           value.Gallery.length > 0 ? (
             <div className="w-full">
@@ -115,8 +116,6 @@ const PreviewSkin = () => {
           <p className="text-center text-muted-foreground mt-4">No gallery images found.</p>
         )}
 
-
-        {/* Video Section */}
         {value?.Video && (
           <div className="w-full">
             <h2 className="text-2xl font-bold mb-4">Preview Video</h2>
@@ -133,7 +132,6 @@ const PreviewSkin = () => {
           </div>
         )}
 
-        {/* License Section */}
         {value?.License && (
           <div className="w-full text-center pb-2">
             <p className="text-sm mt-4">
@@ -242,7 +240,6 @@ const DownloadPopup = ({ downloadLink, skinName }: popupType) => {
             </div>
           ))}
         </div>
-          {/* MULTI-SELECT COMBOBOX */}
           <Combobox multiple value={selectedChamps} onChange={(newSelected) => {
             setSelectedChamps(newSelected); 
             setQuery("")}}>

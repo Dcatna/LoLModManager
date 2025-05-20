@@ -1,21 +1,37 @@
 import { useStateProducerT } from '@/lib/utils';
 import { Champ, ChampCardProp } from '@/Types/types';
-import { FetchSkinsForChampionById } from 'wailsjs/go/main/App';
+import { FetchSkinsForChampionById, DeleteSkin, GetChampionsForSkin } from 'wailsjs/go/main/App';
 import { db } from 'wailsjs/go/models';
 import { Divide, Trash2 } from 'lucide-react'; // optional: icon instead of emoji
 import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 const ChampScreen = () => {
   const location = useLocation();
   const champ = location.state as Champ;
+  const [trigger, setTrigger] = useState(0)
 
   const { loading, error, value: skins } = useStateProducerT<db.DownloadedSkin[]>([], async (setSkins) => {
     const data = await FetchSkinsForChampionById(champ.ID);
     setSkins(data);
-  });
+  }, [trigger]);
 
-  const handleDelete = (skinId: string) => {
-    
+
+
+  const handleDelete = async (skinId: string) => {
+    console.log(champ)
+    const champions = await GetChampionsForSkin(skinId)
+    console.log(champions)
+    if (champions === null) {
+      alert("deleted failed")
+    }
+    if (champions.length > 1) {
+      alert("This would delete for: ", )
+    }
+
+    await DeleteSkin(skinId)
+
+    setTrigger(p => p+1)
 
   };
 
@@ -41,7 +57,9 @@ const ChampScreen = () => {
           >
             <span className="truncate">{skin.name}</span>
             <button
-              onClick={() => handleDelete(skin.id)}
+              onClick={() => {
+                console.log(skin, "SIOSDFSD")
+                handleDelete(skin.id)}}
               className="text-red-500 hover:text-red-700 transition"
               title="Delete Skin"
             >

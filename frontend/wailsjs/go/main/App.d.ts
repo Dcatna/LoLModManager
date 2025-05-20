@@ -4,6 +4,8 @@ import {db} from '../models';
 
 export function BrowseLeagueFolder():Promise<string>;
 
+export function DeleteSkin(arg1:string):Promise<void>;
+
 export function DisableSkin(arg1:string):Promise<void>;
 
 export function DownloadSkin(arg1:string,arg2:string,arg3:Array<db.Champion>,arg4:string):Promise<void>;
@@ -15,6 +17,8 @@ export function FetchSkinsForChampionById(arg1:string):Promise<Array<db.Download
 export function FindLeaugeDownload():Promise<string>;
 
 export function GetChampions():Promise<Array<db.Champion>>;
+
+export function GetChampionsForSkin(arg1:string):Promise<Array<db.Champion>>;
 
 export function GetGalleryForSkin(arg1:string):Promise<Array<db.Gallery>>;
 

@@ -5,7 +5,6 @@ import (
 	"LoLModManager/util"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -160,6 +159,12 @@ func (a *App) SetSetting(key, value string) error {
 func (a *App) GetSetting(key string) (string, error) {
 	return a.db.GetSetting(key)
 }
+func (a *App) DeleteSkin(skinID string) error {
+	 return a.db.DeleteSkin(skinID)
+}
+func (a *App) GetChampionsForSkin(skinID string) ([]db.Champion, error) {
+	return a.db.GetChampionsForSkin(skinID)
+}
 
 func (a *App) FindLeaugeDownload() (string, error) {
 	var folderPath string
@@ -233,49 +238,6 @@ func (a *App) EnableSkin(skinName string) error {
 func (a *App) DisableSkin(skinName string) error {
 	return a.db.SetSkinActive(skinName, false)
 }
-func copyDir(src string, dst string) error {
-	entries, err := os.ReadDir(src)
-	if err != nil {
-		return err
-	}
-
-	if err := os.MkdirAll(dst, 0755); err != nil {
-		return err
-	}
-
-	for _, entry := range entries {
-		srcPath := filepath.Join(src, entry.Name())
-		dstPath := filepath.Join(dst, entry.Name())
-
-		info, err := entry.Info()
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() {
-			if err := copyDir(srcPath, dstPath); err != nil {
-				return err
-			}
-		} else {
-			in, err := os.Open(srcPath)
-			if err != nil {
-				return err
-			}
-			defer in.Close()
-
-			out, err := os.Create(dstPath)
-			if err != nil {
-				return err
-			}
-			defer out.Close()
-
-			if _, err = io.Copy(out, in); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
 
 func (a *App) GetSkins(search string, page int) db.SkinsPage {
 	url := fmt.Sprintf(`https://runeforge.dev/mods?categories[0]=champion_skin&onlyGilded=false&page=%d&search=%s&sortBy=recently_published`, page, search)
@@ -318,7 +280,8 @@ func (a *App) GetSkins(search string, page int) db.SkinsPage {
 			types = append(types, t.Text())
 		})
 
-		itemLink := s.Find("a.underline-offset-2.inline-flex").AttrOr("href", "")
+		itemLink := s.Find("a.relative.rounded-t-xl").AttrOr("href", "")
+		fmt.Println(itemLink, "IDDDDDDDD")
 		id := strings.TrimPrefix(itemLink, "/mods/")
 
 		skins = append(skins, db.Skins{

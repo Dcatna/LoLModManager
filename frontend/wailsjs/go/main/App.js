@@ -6,6 +6,10 @@ export function BrowseLeagueFolder() {
   return window['go']['main']['App']['BrowseLeagueFolder']();
 }
 
+export function DeleteSkin(arg1) {
+  return window['go']['main']['App']['DeleteSkin'](arg1);
+}
+
 export function DisableSkin(arg1) {
   return window['go']['main']['App']['DisableSkin'](arg1);
 }
@@ -28,6 +32,10 @@ export function FindLeaugeDownload() {
 
 export function GetChampions() {
   return window['go']['main']['App']['GetChampions']();
+}
+
+export function GetChampionsForSkin(arg1) {
+  return window['go']['main']['App']['GetChampionsForSkin'](arg1);
 }
 
 export function GetGalleryForSkin(arg1) {

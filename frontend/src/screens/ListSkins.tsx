@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Skin, Skins, SkinsPage } from '@/Types/types';
 import { Input } from '@/components/ui/input';
 import { callbackify } from 'util';
+import PatcherOutput from '@/components/PatcherOutput';
 
 type Props = {}
 
@@ -23,6 +24,8 @@ const ListSkins = (props: Props) => {
     console.log(value)
   return (
     <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
+      <PatcherOutput />
+
       <h1 className="text-4xl font-bold mb-8 text-center">Find Custom Skins</h1>
       <div className='mb-4'>
         <Input placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)}/>

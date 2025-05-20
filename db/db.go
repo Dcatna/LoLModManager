@@ -57,12 +57,11 @@ func createSkinsTable(db *sql.DB) {
 	createTableSQL2 := `
 	CREATE TABLE IF NOT EXISTS skin_champions (
 		skin_id INTEGER NOT NULL,
-		champion_id INTEGER NOT NULL,
+		champion_id TEXT NOT NULL,
 		FOREIGN KEY (skin_id) REFERENCES skins(id),
 		FOREIGN KEY (champion_id) REFERENCES champions(id),
 		PRIMARY KEY (skin_id, champion_id)
-	)
-	`
+	)`
 	_, err2 := db.Exec(createTableSQL2)
 	if err2 != nil {
 		panic(err2)

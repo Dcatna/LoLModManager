@@ -2,12 +2,14 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"mime"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -167,4 +169,77 @@ func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
 	}
 
 	return skins, nil
+}
+
+func (db *DB) GetChampionsForSkin(skinID string) ([]Champion, error) {
+	fmt.Println("GetChampionsForSkin:", skinID)
+
+	// Convert skinID from string to int64
+	skinIntID, err := strconv.ParseInt(skinID, 10, 64)
+	if err != nil {
+		return nil, fmt.Errorf("invalid skinID: %v", err)
+	}
+
+	query := `
+		SELECT c.id, c.name, c.image, c.tags
+		FROM champions c
+		INNER JOIN skin_champions sc ON c.id = sc.champion_id
+		WHERE sc.skin_id = ?
+	`
+
+	rows, err := db.conn.Query(query, skinIntID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var champs []Champion
+	for rows.Next() {
+		var champ Champion
+		var tagsStr string
+
+		if err := rows.Scan(&champ.ID, &champ.Name, &champ.Image, &tagsStr); err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal([]byte(tagsStr), &champ.Tags)
+		if err != nil {
+			return nil, err
+		}
+		champs = append(champs, champ)
+	}
+	fmt.Println("Linked champions:", champs)
+	return champs, nil
+}
+
+func (db *DB) DeleteSkin(skinID string) error {
+	tx, err := db.conn.Begin()
+	if err != nil {
+		return err
+	}
+
+	var filePath string
+	err = tx.QueryRow("SELECT file_path FROM skins WHERE id = ?", skinID).Scan(&filePath)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM skin_champions WHERE skin_id = ?", skinID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM skins WHERE id = ?", skinID)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	err = os.RemoveAll(filepath.Join(".", filePath))
+	if err != nil {
+		fmt.Printf("Warning: could not remove folder %s: %v\n", filePath, err)
+	}
+
+	return tx.Commit()
 }
