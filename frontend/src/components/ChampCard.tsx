@@ -7,6 +7,8 @@ import { ChampCardProp } from "@/Types/types";
 import { FetchSkinsForChampionById, EnableSkin, DisableSkin } from "../../wailsjs/go/main/App";
 import { Switch } from "@/components/ui/switch";
 import { useSkinContext } from "../SkinContext";
+import ChampScreen from "./ChampScreen";
+import { Link } from "react-router-dom";
 
 const ChampCard = (champ: ChampCardProp) => {
   const { loading, error, value: skins } = useStateProducerT<db.DownloadedSkin[]>([], async (update) => {
@@ -20,7 +22,7 @@ const ChampCard = (champ: ChampCardProp) => {
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
-      
+      <Link to={`/champscreen/${champ.Name}`} state={champ}>
       <div className="flex flex-col items-center min-w-[150px]">
         <img 
           src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} 
@@ -53,9 +55,12 @@ const ChampCard = (champ: ChampCardProp) => {
             }}
           />
         </div>
+
         ))}
       </div>
+      </Link> 
     </div>
+    
   );
 };
 

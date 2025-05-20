@@ -8,6 +8,7 @@ import ListSkins from './screens/ListSkins';
 import PreviewSkin from './screens/PreviewSkin';
 import Home from './screens/Home';
 import Settings from './screens/Settings';
+import ChampScreen from './components/ChampScreen';
 
 
 
@@ -20,7 +21,8 @@ const router = createBrowserRouter([
         { path: "/legends", element: <Home /> },
         { path: "/find_skins", element: <ListSkins />},
         { path: "/preview_skin/:id", element: <PreviewSkin />},
-        { path: "/settings", element: <Settings />}
+        { path: "/settings", element: <Settings />},
+        { path: "/champscreen/:name", element: <ChampScreen/>}
       ]
     }
   ]);

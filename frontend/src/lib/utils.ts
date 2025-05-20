@@ -75,16 +75,47 @@ export function useStateProducerT<T extends any, E = Error>(
 
 export function useStateProducer<T extends any>(
   defaultValue: T,
-  producer: (update: (value: T) => void) => Promise<void>,
+  producer: (
+    update: (value: T) => void,
+    onDispose: (dipose: () => void) => void,
+  ) => void,
   keys: ReadonlyArray<unknown> = []
 ): T {
   const [value, setValue] = useState(defaultValue);
 
   useEffect(() => {
+    let aborted = false
+    let disposed = false
+    let disposeFn: ((() => void) | null) = null
+
+    const disposeIfAborted = () => {
+      if (aborted && !disposed && disposeFn) {
+        disposeFn()
+        disposed = true
+      }
+    }
+
     try {
-      producer(setValue).catch((e) => LogError(e));
+      producer(
+        (v) => {
+          if (!aborted) {
+            setValue(v)
+          } else {
+            disposeIfAborted()
+          }
+        },
+        (dispose) => {
+          disposeFn = dispose
+          disposeIfAborted()
+        }
+      )
     } catch (e: any) {
       LogError(e);
+    }
+
+    return () => {
+      aborted = true
+      disposeIfAborted()
     }
   }, keys);
 

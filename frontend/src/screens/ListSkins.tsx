@@ -20,7 +20,7 @@ const ListSkins = (props: Props) => {
       });
 
     }, [search, currentPage], 300);
-
+    console.log(value)
   return (
     <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
       <h1 className="text-4xl font-bold mb-8 text-center">Find Custom Skins</h1>
@@ -36,34 +36,34 @@ const ListSkins = (props: Props) => {
         </div>
       )}
 
-{!loading && !error && value?.Skins && (
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-    {value.Skins.map((skin) =>
-      skin && skin.ID ? (
-        <Link
-          to={`/preview_skin/${skin.ID}`}
-          state={skin}
-          key={skin.ID}
-          className="flex flex-col items-center bg-card rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform"
-        >
-          <img
-            src={skin.Image}
-            alt={skin.Title}
-            className="w-full h-48 object-cover"
-          />
-          <div className="p-4 text-center">
-            <h2 className="text-lg font-semibold truncate">{skin.Title}</h2>
-            {skin.Author && (
-              <p className="text-sm text-muted-foreground mt-1">
-                {skin.Author}
-              </p>
-            )}
-          </div>
-        </Link>
-      ) : null
-    )}
-  </div>
-)}
+      {!loading && !error && value?.Skins && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {value.Skins.map((skin) =>
+            skin && skin.ID ? (
+              <Link
+                to={`/preview_skin/${skin.ID}`}
+                state={skin}
+                key={skin.ID}
+                className="flex flex-col items-center bg-card rounded-xl shadow-md overflow-hidden hover:scale-105 transition-transform"
+              >
+                <img
+                  src={skin.Image}
+                  alt={skin.Title}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="p-4 text-center">
+                  <h2 className="text-lg font-semibold truncate">{skin.Title}</h2>
+                  {skin.Author && (
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {skin.Author}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ) : null
+          )}
+        </div>
+      )}
 
 
       {!loading && !error ? <div className="flex justify-center mt-8">
