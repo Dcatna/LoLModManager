@@ -147,6 +147,9 @@ func WriteProfileFile(skinNames []string) error {
 func (a *App) DownloadSkin(downloadURL, saveName string, champions []db.Champion, skinName string) error {
 	return a.db.DownloadSkin(downloadURL, saveName, champions, skinName)
 }
+func (a *App) ImportSkin(characters []db.Champion, skinName string, saveName string) error {
+	return a.db.ImportSkin(characters, skinName, saveName)
+}
 func (a *App) GetChampions() ([]db.Champion, error) {
 	return a.db.GetChampions()
 }
@@ -160,7 +163,7 @@ func (a *App) GetSetting(key string) (string, error) {
 	return a.db.GetSetting(key)
 }
 func (a *App) DeleteSkin(skinID string) error {
-	 return a.db.DeleteSkin(skinID)
+	return a.db.DeleteSkin(skinID)
 }
 func (a *App) GetChampionsForSkin(skinID string) ([]db.Champion, error) {
 	return a.db.GetChampionsForSkin(skinID)
@@ -203,6 +206,9 @@ func (a *App) FindLeaugeDownload() (string, error) {
 func (a *App) BrowseLeagueFolder() (string, error) {
 	return a.OpenDirectoryDialog("Select League of Legends Folder", nil)
 }
+func (a *App) BrowseFolders() (string, error) {
+	return a.OpenFantomeFileDialog()
+}
 
 func (a *App) OpenMultipleFilesDialog(display string, filters []string) ([]string, error) {
 	return runtime.OpenMultipleFilesDialog(
@@ -228,6 +234,21 @@ func (a *App) OpenDirectoryDialog(display string, filters []string) (string, err
 				},
 			},
 		})
+}
+
+func (a *App) OpenFantomeFileDialog() (string, error) {
+	return runtime.OpenFileDialog(
+		a.ctx,
+		runtime.OpenDialogOptions{
+			Title: "Select a .fantome mod file",
+			Filters: []runtime.FileFilter{
+				{
+					DisplayName: "Fantome Mods",
+					Pattern:     "*.fantome",
+				},
+			},
+		},
+	)
 }
 
 func (a *App) EnableSkin(skinName string) error {

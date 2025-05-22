@@ -145,6 +145,53 @@ func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, 
 	return db.LinkSkinToChampions(skinID, characters)
 }
 
+func (db *DB) ImportSkin(characters []Champion, skinName string, fullPath string) error {
+	// Get just the file name
+	fileName := filepath.Base(fullPath)
+
+	// Target path in ./installed/
+	savePath := filepath.Join("installed", fileName)
+
+	from, err := os.Open(fullPath)
+	if err != nil {
+		return fmt.Errorf("failed to open fantome file: %w", err)
+	}
+
+	to, err := os.Create(savePath)
+	if err != nil {
+		from.Close() // close manually to avoid leaking file handle
+		return fmt.Errorf("failed to create destination file: %w", err)
+	}
+
+	_, err = io.Copy(to, from)
+	from.Close() // <- ✅ CLOSE before proceeding
+	to.Close()
+
+	if err != nil {
+		return fmt.Errorf("failed to copy fantome file: %w", err)
+	}
+
+
+	// now the file is closed and safe to delete
+	err = EnableSkin(savePath)
+	if err != nil {
+		return err
+	}
+
+	if err := os.Remove(savePath); err != nil {
+		return err
+	}
+
+
+	skinInstallPath := filepath.Join("installed", getSkinFolderName(fileName))
+	skinID, err := db.InsertSkin(skinName, skinInstallPath)
+	if err != nil {
+		return err
+	}
+
+	return db.LinkSkinToChampions(skinID, characters)
+}
+
 func (db *DB) FetchSkinsForChampionById(id string) ([]DownloadedSkin, error) {
 	query := `
 		SELECT skins.id, skins.name, skins.file_path, skins.is_active
