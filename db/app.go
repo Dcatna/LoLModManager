@@ -146,10 +146,8 @@ func (db *DB) DownloadSkin(downloadURL, saveName string, characters []Champion, 
 }
 
 func (db *DB) ImportSkin(characters []Champion, skinName string, fullPath string) error {
-	// Get just the file name
 	fileName := filepath.Base(fullPath)
 
-	// Target path in ./installed/
 	savePath := filepath.Join("installed", fileName)
 
 	from, err := os.Open(fullPath)
@@ -159,20 +157,18 @@ func (db *DB) ImportSkin(characters []Champion, skinName string, fullPath string
 
 	to, err := os.Create(savePath)
 	if err != nil {
-		from.Close() // close manually to avoid leaking file handle
+		from.Close()
 		return fmt.Errorf("failed to create destination file: %w", err)
 	}
 
 	_, err = io.Copy(to, from)
-	from.Close() // <- ✅ CLOSE before proceeding
+	from.Close()
 	to.Close()
 
 	if err != nil {
 		return fmt.Errorf("failed to copy fantome file: %w", err)
 	}
 
-
-	// now the file is closed and safe to delete
 	err = EnableSkin(savePath)
 	if err != nil {
 		return err

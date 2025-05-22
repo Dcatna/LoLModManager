@@ -12,12 +12,23 @@ import { Link } from "react-router-dom";
 
 const ChampCard = (champ: ChampCardProp) => {
   const { loading, error, value: skins } = useStateProducerT<db.DownloadedSkin[]>([], async (update) => {
-    const data = await FetchSkinsForChampionById(champ.ID);
+    const data = await FetchSkinsForChampionById(champ.ID)
     console.log(data)
-    update(data);
-  });
+    update(data)
+  })
   console.log(skins)
-  const { activeSkins, updateActiveSkins } = useSkinContext();
+  const { activeSkins, updateActiveSkins } = useSkinContext()
+  const [activeSkinId, setActiveSkinId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (skins && activeSkinId === null) {
+      const active = skins.find((s) => s.isActive === 1)
+      if (active) {
+        setActiveSkinId(active.id)
+      }
+    }
+  }, [skins])
+
 
 
   return (
@@ -40,19 +51,31 @@ const ChampCard = (champ: ChampCardProp) => {
             <TextDisplay text={skin.name} maxWidth={140} />
           </div>
           <Switch
-            checked={skin.isActive === 1}
+            checked={activeSkinId === skin.id}
             onCheckedChange={async (checked) => {
-              if (checked) {
+              if (checked && skin.id !== activeSkinId) {
+                const prevSkin = skins.find(s => s.id === activeSkinId);
+                if (prevSkin) {
+                  await DisableSkin(prevSkin.name);
+                  updateActiveSkins(prevSkin.file_path.split("\\")[1], "remove");
+                  prevSkin.isActive = 0;
+                }
+
                 await EnableSkin(skin.name);
                 updateActiveSkins(skin.file_path.split("\\")[1], "add");
                 skin.isActive = 1;
-              } else {
+                setActiveSkinId(skin.id);
+
+              } else if (!checked && activeSkinId === skin.id) {
+
                 await DisableSkin(skin.name);
                 updateActiveSkins(skin.file_path.split("\\")[1], "remove");
                 skin.isActive = 0;
+                setActiveSkinId(null);
               }
             }}
           />
+
         </div>
       ))}
     </div>
