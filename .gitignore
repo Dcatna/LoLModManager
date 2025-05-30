@@ -2,9 +2,10 @@ build/bin
 node_modules
 frontend/dist
 
-.db
+*.db
 
 skins/
 installed/
 profiles/
 tools/hashes.game.txt
+
