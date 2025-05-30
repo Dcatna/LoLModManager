@@ -30,13 +30,15 @@ Go to the releases page and download the newest release
 B. **Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/lol-mod-manager.git
-cd lol-mod-manager
+git clone https://github.com/Dcatna/LoLModManager.git
+cd lolmodmanager
 
 cd frontend
 npm install
+cd ..
 wails dev
 ```
+
 ## Showcase
 ![lolmod1](https://github.com/user-attachments/assets/84b3f977-bb3e-4b62-992e-4f578cdb9dc9)
 ![lolmod2](https://github.com/user-attachments/assets/ec2705d2-33f4-4082-8008-dee23a7d0fd1)
