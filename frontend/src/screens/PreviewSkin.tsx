@@ -17,6 +17,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Combobox } from '@headlessui/react';
 import PatcherOutput from '@/components/PatcherOutput';
+import { BrowserOpenURL } from 'wailsjs/runtime/runtime';
 
 
 
@@ -68,8 +69,10 @@ const PreviewSkin = () => {
     </div>
 
     <div className="flex justify-end gap-4 mt-4">
-      <a 
-        href={`https://runeforge.dev${skin.ItemLink}`} 
+      <a
+        onClick={() => {
+          BrowserOpenURL(`https://runeforge.dev${skin.ItemLink}`)
+        }}
         target="_blank" 
         className="px-6 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/80 transition w-fit"
       >

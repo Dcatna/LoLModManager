@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { GetSetting, SetSetting, FindLeaugeDownload, BrowseLeagueFolder } from "../../wailsjs/go/main/App";
+import { GetSetting, FindLeaugeDownload, BrowseLeagueFolder } from "../../wailsjs/go/main/App";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,18 +8,19 @@ import PatcherOutput from "@/components/PatcherOutput";
 
 const Settings = () => {
   const [leaguePath, setLeaguePath] = useState("")
+  const [trig, setTrig] = useState(0)
 
   useEffect(() => {
     async function fetchSettings() {
       const savedPath = await GetSetting("league_path")
+      console.log(savedPath,"PATH")
       if (savedPath) setLeaguePath(savedPath)
     }
     fetchSettings()
-  }, [])
+  }, [trig])
 
   const handleSave = async () => {
-    await SetSetting("league_path", leaguePath)
-
+    setTrig(prev => prev + 1)
   };
 
   console.log(leaguePath)
@@ -59,6 +60,7 @@ const Settings = () => {
             <Button variant="secondary" onClick={async () => {
               try {
                 await FindLeaugeDownload()
+                await handleSave()
               } catch (e) {
                 alert(e)
               }

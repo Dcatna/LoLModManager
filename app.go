@@ -27,6 +27,12 @@ type App struct {
 // NewApp creates a new App application struct
 func NewApp() *App {
 	db := db.InitDB()
+	
+	err := db.SeedChampions()
+
+	if err != nil {
+		panic("newapp error")
+	}
 	return &App{db: db}
 }
 
@@ -36,12 +42,7 @@ func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	runtime.LogInfo(ctx, "Starting Mod Manager")
 
-	db.InitDB()
-	err := a.db.SeedChampions()
 
-	if err != nil {
-		runtime.LogError(ctx, "Failed to seed: "+err.Error())
-	}
 
 }
 
