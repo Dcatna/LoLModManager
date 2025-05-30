@@ -200,9 +200,11 @@ const DownloadPopup = ({ downloadLink, skinName }: popupType) => {
       console.log("Saving as filename:", fileName)
   
       await DownloadSkin(downloadLink, fileName, selectedChamps, skinName)
+
       console.log("DOWNLOAD DONE")
     } catch (e) {
       console.error("FAILED TO DOWNLOAD: ", e)
+      alert(e as string)
     }
   }
   
