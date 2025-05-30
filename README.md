@@ -1,6 +1,6 @@
 # League of Legends Mod Manager
 
-A skin mod manager for League of Legends with support for custom `.fantome` mod files and champion-based mod activation.
+A skin mod manager for League of Legends with support for custom `.fantome` mod files and champion-based mod activation. Built from CSLOL.
 
 ## Features
 
@@ -13,6 +13,16 @@ A skin mod manager for League of Legends with support for custom `.fantome` mod 
 - Beautiful UI with responsive layout using Tailwind + shadcn/ui.
 
 ---
+
+## Tech Stack
+- WAILS
+- Go
+- sqlc
+- sqlite
+- Shadcn/ui
+- Tailwind
+- Typescript
+- React
 
 ## Setup
 
