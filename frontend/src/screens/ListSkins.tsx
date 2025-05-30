@@ -11,7 +11,7 @@ type Props = {}
 
 const ListSkins = (props: Props) => {
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const { loading, error, value } = useStateProducerT<SkinsPage | undefined>(undefined , async (update) => {
       const data = await GetSkins(search, currentPage);
