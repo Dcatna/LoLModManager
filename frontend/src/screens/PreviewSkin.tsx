@@ -76,10 +76,8 @@ const PreviewSkin = () => {
         View on Runeforge
       </a>
 
-      {value?.DownloadLink ? <button 
-        // onClick={downloadSkin}
-        className="flex items-center justify-center p-3 rounded-md bg-primary text-primary-foreground hover:bg-primary/80 transition"
-      > 
+      {value?.DownloadLink ? 
+      <button className="flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/80 transition"> 
         <DownloadPopup downloadLink={value?.DownloadLink} skinName={skin.Title}/>
       </button> :
       <div/>}
@@ -213,13 +211,13 @@ const DownloadPopup = ({ downloadLink, skinName }: popupType) => {
       <DialogTrigger 
         className="bg-background text-foreground rounded-lg shadow-md"
         onClick={() => setOpen(true)}
-      >
-        <DownloadIcon className="h-5 w-5 bg-primary text-white" />
+      > 
+      <Button><DownloadIcon className="h-5 w-5 bg-primary text-white" /></Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-lg p-6 rounded-lg bg-card shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold">Select Champion(s)</DialogTitle>
+          <DialogTitle className="text-lg font-bold text-foreground">Select Champion(s)</DialogTitle>
           <DialogDescription className="text-sm">
             Search and select champions for this skin.
           </DialogDescription>
@@ -246,7 +244,7 @@ const DownloadPopup = ({ downloadLink, skinName }: popupType) => {
 
             <Combobox.Input
               value={query}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full text-foreground"
               placeholder="Search champions..."
               onChange={(event) => setQuery(event.target.value)}
               displayValue={(champs: Champ[]) => champs.map((c) => c.Name).join(', ')}

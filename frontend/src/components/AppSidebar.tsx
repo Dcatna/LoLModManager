@@ -116,15 +116,15 @@ const filteredChamps = useMemo(() => {
 
       <DialogContent className="max-w-lg p-6 rounded-lg bg-card shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold">Import Local Fantome</DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogTitle className="text-lg font-bold text-foreground">Import Local Fantome</DialogTitle>
+          <DialogDescription className="text-sm text-foreground">
             Upload local mod and specify the champions associated with it.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <Label className="block space-y-1">
-            <span className="text-sm font-medium">Fantome File</span>
+            <span className="text-sm font-medium text-foreground mr-2">Fantome File</span>
             <Button variant="outline" type="button" onClick={handleFilePick}>
               {filePath ? filePath.split("\\").pop() : "Select .fantome file"}
             </Button>
@@ -150,7 +150,7 @@ const filteredChamps = useMemo(() => {
 
             <Combobox.Input
               value={query}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full text-foreground"
               placeholder="Search champions..."
               onChange={(event) => setQuery(event.target.value)}
               displayValue={(champs: Champ[]) => champs.map((c) => c.Name).join(', ')}
