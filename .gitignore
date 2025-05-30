@@ -2,10 +2,10 @@ build/bin
 node_modules
 frontend/dist
 
-*.db
+lolskinmanager.db
 
 skins/*
 installed/*
 profiles/*
 tools/hashes.game.txt
-
+profiles\Default Profile.profile
