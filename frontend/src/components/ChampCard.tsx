@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useStateProducerT } from "@/lib/utils";
-// import { DownloadedSkin} from "@/Types/types";
 import { db } from '../../wailsjs/go/models'
 
 import { ChampCardProp } from "@/Types/types";
 import { FetchSkinsForChampionById, EnableSkin, DisableSkin } from "../../wailsjs/go/main/App";
 import { Switch } from "@/components/ui/switch";
 import { useSkinContext } from "../SkinContext";
-import ChampScreen from "./ChampScreen";
 import { Link } from "react-router-dom";
+import { ChampCard2 } from "./ChampCard2";
 
 const ChampCard = (champ: ChampCardProp) => {
   const { loading, error, value: skins } = useStateProducerT<db.DownloadedSkin[]>([], async (update) => {
@@ -30,57 +29,70 @@ const ChampCard = (champ: ChampCardProp) => {
   }, [skins])
 
 
+  return (
+    <ChampCard2
+      modDropdownMenu={() => <></>}
+      enableMod={(id, enabled) => {
+
+      }}
+      ID={champ.ID}
+      Name={champ.Name}
+      Image={champ.Image}
+      Tags={[]}
+      skins={skins ?? []}
+    />
+  )
+
 
   return (
-  <div className="flex flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
-    
-    <Link to={`/champscreen/${champ.Name}`} state={champ} className="flex flex-col items-center min-w-[120px] hover:opacity-80 transition">
-      <img 
-        src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`} 
-        alt={champ.Name} 
-        className="w-20 h-20 rounded-full object-cover mb-1"
-      />
-      <p className="text-sm font-semibold text-center">{champ.Name}</p>
-      <p className="text-xs text-gray-500 text-center">{champ.Tags}</p>
-    </Link>
+    <div className="flex flex-row items-start gap-6 p-4 border rounded shadow hover:scale-105 transform transition bg-card min-w-[300px] max-w-[350px]">
 
-    <div className="flex-1 grid grid-cols-1 gap-2">
-      {skins?.map((skin) => (
-        <div key={skin.id} className="flex items-center justify-between p-2 border rounded bg-muted">
-          <div className="max-w-[140px] overflow-hidden">
-            <TextDisplay text={skin.name} maxWidth={140} />
-          </div>
-          <Switch
-            checked={activeSkinId === skin.id}
-            onCheckedChange={async (checked) => {
-              if (checked && skin.id !== activeSkinId) {
-                const prevSkin = skins.find(s => s.id === activeSkinId);
-                if (prevSkin) {
-                  await DisableSkin(prevSkin.name);
-                  updateActiveSkins(prevSkin.file_path.split("\\")[1], "remove");
-                  prevSkin.isActive = 0;
+      <Link to={`/champscreen/${champ.Name}`} state={champ} className="flex flex-col items-center min-w-[120px] hover:opacity-80 transition">
+        <img
+          src={`https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/${champ.Image}`}
+          alt={champ.Name}
+          className="w-20 h-20 rounded-full object-cover mb-1"
+        />
+        <p className="text-sm font-semibold text-center">{champ.Name}</p>
+        <p className="text-xs text-gray-500 text-center">{champ.Tags}</p>
+      </Link>
+
+      <div className="flex-1 grid grid-cols-1 gap-2">
+        {skins?.map((skin) => (
+          <div key={skin.id} className="flex items-center justify-between p-2 border rounded bg-muted">
+            <div className="max-w-[140px] overflow-hidden">
+              <TextDisplay text={skin.name} maxWidth={140} />
+            </div>
+            <Switch
+              checked={activeSkinId === skin.id}
+              onCheckedChange={async (checked) => {
+                if (checked && skin.id !== activeSkinId) {
+                  const prevSkin = skins.find(s => s.id === activeSkinId);
+                  if (prevSkin) {
+                    await DisableSkin(prevSkin.name);
+                    updateActiveSkins(prevSkin.file_path.split("\\")[1], "remove");
+                    prevSkin.isActive = 0;
+                  }
+
+                  await EnableSkin(skin.name);
+                  updateActiveSkins(skin.file_path.split("\\")[1], "add");
+                  skin.isActive = 1;
+                  setActiveSkinId(skin.id);
+
+                } else if (!checked && activeSkinId === skin.id) {
+
+                  await DisableSkin(skin.name);
+                  updateActiveSkins(skin.file_path.split("\\")[1], "remove");
+                  skin.isActive = 0;
+                  setActiveSkinId(null);
                 }
+              }}
+            />
 
-                await EnableSkin(skin.name);
-                updateActiveSkins(skin.file_path.split("\\")[1], "add");
-                skin.isActive = 1;
-                setActiveSkinId(skin.id);
-
-              } else if (!checked && activeSkinId === skin.id) {
-
-                await DisableSkin(skin.name);
-                updateActiveSkins(skin.file_path.split("\\")[1], "remove");
-                skin.isActive = 0;
-                setActiveSkinId(null);
-              }
-            }}
-          />
-
-        </div>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-    
   );
 };
 

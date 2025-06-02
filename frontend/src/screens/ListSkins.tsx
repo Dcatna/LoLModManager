@@ -1,34 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { GetSkins } from "../../wailsjs/go/main/App";
-import { useStateProducerT } from '../lib/utils';
+import { cn, useStateProducerT } from '../lib/utils';
 import { Link } from 'react-router-dom';
-import { Skin, Skins, SkinsPage } from '@/Types/types';
+import { SkinsPage } from '@/Types/types';
 import { Input } from '@/components/ui/input';
-import { callbackify } from 'util';
 import PatcherOutput from '@/components/PatcherOutput';
 
 type Props = {}
+
 
 const ListSkins = (props: Props) => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
 
-  const { loading, error, value } = useStateProducerT<SkinsPage | undefined>(undefined , async (update) => {
-      const data = await GetSkins(search, currentPage);
-      update({
-        Skins: data.skins,
-        TotalPages: data.totalPages
-      });
+  const { loading, error, value } = useStateProducerT<SkinsPage | undefined>(undefined, async (update) => {
+    const data = await GetSkins(search, currentPage);
+    update({
+      Skins: data.skins,
+      TotalPages: data.totalPages
+    });
 
-    }, [search, currentPage], 300);
-    console.log(value)
+  }, [search, currentPage], 300);
+  console.log(value)
   return (
-    <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto">
+    <div className="p-8 min-h-screen bg-background text-foreground overflow-y-auto flex flex-col">
       <PatcherOutput />
-
       <h1 className="text-4xl font-bold mb-8 text-center">Find Custom Skins</h1>
       <div className='mb-4'>
-        <Input placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)}/>
+        <Input placeholder='Search' value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       {loading && <div className="text-center text-lg">Loading...</div>}
       {error && <div className="text-center text-red-500">Error loading skins</div>}
@@ -83,11 +82,10 @@ const ListSkins = (props: Props) => {
             <button
               key={page}
               onClick={() => setCurrentPage(page)}
-              className={`px-3 py-1 rounded-md text-sm ${
-                page === currentPage
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-muted-foreground/10"
-              }`}
+              className={`px-3 py-1 rounded-md text-sm ${page === currentPage
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-muted-foreground/10"
+                }`}
             >
               {page}
             </button>
@@ -97,11 +95,10 @@ const ListSkins = (props: Props) => {
 
           <button
             onClick={() => setCurrentPage(value?.TotalPages!)}
-            className={`px-3 py-1 rounded-md text-sm ${
-              currentPage === value?.TotalPages
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-muted-foreground/10"
-            }`}
+            className={`px-3 py-1 rounded-md text-sm ${currentPage === value?.TotalPages
+              ? "bg-primary text-primary-foreground"
+              : "hover:bg-muted-foreground/10"
+              }`}
           >
             {value?.TotalPages}
           </button>
@@ -114,7 +111,7 @@ const ListSkins = (props: Props) => {
             &gt;
           </button>
         </nav>
-      </div> : <div/>}
+      </div> : <div />}
 
     </div>
   );
