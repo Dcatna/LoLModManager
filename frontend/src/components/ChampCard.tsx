@@ -32,10 +32,10 @@ const ChampCard = (champ: ChampCardProp) => {
     <ChampCard2
       modDropdownMenu={() => <></>}
       enableMod={() => { }}
-      ID={champ.ID}
-      Name={champ.Name}
-      Image={champ.Image}
-      Tags={[]}
+      cid={champ.ID}
+      name={champ.Name}
+      image={champ.Image}
+      tags={[]}
       skins={skins ?? []}
     />
   )

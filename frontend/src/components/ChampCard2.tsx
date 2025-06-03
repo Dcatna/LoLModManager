@@ -9,10 +9,10 @@ import { Champ } from "@/Types/types";
 
 
 export interface CharacterInfoCardProps extends HTMLAttributes<HTMLDivElement> {
-    ID: string;
-    Name: string;
-    Image: string;
-    Tags: string[];
+    cid: string;
+    name: string;
+    image: string;
+    tags: string[];
     skins: db.DownloadedSkin[];
     enableMod: (id: string, enabled: boolean) => void;
     modDropdownMenu: () => ReactElement | undefined;
@@ -112,7 +112,7 @@ const ModRow = ({
                             <text>Tags: {tags.join(", ")}</text>
                             <div className="flex flex-row space-x-2 overflow-x-auto">
                                 {images?.map((uri) => (
-                                    <img className="object-cover aspect-square w-70 h-70 m-2" src={uri} />
+                                    <img loading="lazy" className="object-scale-down aspect-square w-70 h-70 m-2" src={uri} />
                                 ))}
                             </div>
                         </HoverCardContent>
@@ -142,7 +142,7 @@ export function ChampCard2({
 
     // TODO: Join skins when gettings champs
     const skins = useStateProducer<db.DownloadedSkin[]>([], async (update) => {
-        const data = await FetchSkinsForChampionById(props.ID)
+        const data = await FetchSkinsForChampionById(props.cid)
         update(data)
     })
 
@@ -154,11 +154,11 @@ export function ChampCard2({
             <div className="flex flex-row m-2 w-full mt-4">
                 <div className="w-1/3 pr-2 flex flex-col items-center">
                     <img
-                        src={"https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/" + props.Image}
-                        alt={`${props.Name} Avatar`}
+                        src={"https://ddragon.leagueoflegends.com/cdn/14.8.1/img/champion/" + props.image}
+                        alt={`${props.name} Avatar`}
                         className="w-full aspect-square object-cover rounded-md"
                     />
-                    <b className="text-lg p-2 text-center truncate w-full">{props.Name}</b>
+                    <b className="text-lg p-2 text-center truncate w-full">{props.name}</b>
                 </div>
                 <div className="w-2/3 overflow-hidden  overflow-y-auto me-2">
                     <div className="max-h-[300px] w-full">

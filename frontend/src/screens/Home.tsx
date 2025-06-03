@@ -49,24 +49,25 @@ const Home = (props: Props) => {
           <GameActionsTopBar input={search} onInputChange={(input) => setSearch(input)} />
         </div>
       </div>
-      <div className="columns-1 md:columns-2 lg:columns-2 xl:columns-3 gap-4 space-y-4 mt-4 mx-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 space-y-4 mt-4 mx-4">
         {value.map((champ) =>
-          <ChampCard2
-            data-label={champ.Name}
-            className="panel-label panel-label-default"
-            key={champ.ID}
-            modDropdownMenu={() => <></>}
-            enableMod={() => { }}
-            ID={champ.ID}
-            Name={champ.Name}
-            Image={champ.Image}
-            Tags={[]}
-            skins={[]}
-          />
+          <MemoizedCard key={champ.ID} champ={champ} />
         )}
       </div>
     </div>
   )
 }
+
+const MemoizedCard = memo(({ champ }: { champ: Champ }) => <ChampCard2
+  data-label={champ.Name}
+  className="panel-label panel-label-default"
+  modDropdownMenu={() => <></>}
+  enableMod={() => { }}
+  cid={champ.ID}
+  name={champ.Name}
+  image={champ.Image}
+  tags={[]}
+  skins={[]}
+/>)
 
 export default Home
