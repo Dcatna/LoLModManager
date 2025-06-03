@@ -1,11 +1,10 @@
-import { LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon, Settings, PlayIcon, BoxIcon } from 'lucide-react'
+import { LucideIcon, ComputerIcon, Moon, Sun, DownloadIcon, PersonStandingIcon, Settings, PlayIcon, BoxIcon, PaletteIcon } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 import { SidebarHeader, SidebarContent, SidebarGroup, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar, Sidebar } from './ui/sidebar'
 import { cn, useStateProducerT } from '@/lib/utils';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { useTheme } from './Theme';
+import { ColorSchemes, useTheme } from './Theme';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RunPatcher, BrowseFolders, GetChampions, ImportSkin } from "../../wailsjs/go/main/App";
 import { useSkinContext } from '@/SkinContext';
@@ -14,6 +13,7 @@ import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Combobox } from '@headlessui/react';
 import { Champ } from '@/Types/types';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -48,6 +48,34 @@ export function SidebarItem(props: SidebarProps) {
     </SidebarMenuItem>
   );
 }
+
+function ColorSchemeToggle() {
+  const { setScheme, scheme, clearPreview, setPreview } = useTheme();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="w-full h-full justify-start z-10">
+        <SidebarItem name="Change Color Scheme" icon={PaletteIcon} />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className='z-10'>
+        {ColorSchemes.map((s) => {
+          return (
+            <DropdownMenuItem
+              key={s}
+              className={cn(s === scheme ? "bg-primary" : "")} onClick={() => setScheme(s)}
+              onFocus={() => setPreview(s)}
+              onBlur={() => clearPreview(s)}
+              onMouseEnter={() => setPreview(s)}
+              onMouseLeave={() => clearPreview(s)}
+            >
+              {s}
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 
 export const ImportFantome = () => {
   const [open, setOpen] = useState(false)
@@ -200,6 +228,7 @@ export const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) =
         className='relative h-full panel-label panel-label-sidebar m-1'>
         <SidebarHeader className="">
           <ModeToggle />
+          <ColorSchemeToggle />
           {/* ADD  SETTIGNS AND SEARCH*/}
           <SidebarItem name={"Run Patcher"} icon={PlayIcon} onClick={() => RunPatcher(activeSkins)} className='hover:bg-accent' />
           <SidebarItem name={'Settings'} icon={Settings} onClick={() => navigate("/settings")} selected={location.pathname.includes("settings")} className='hover:bg-accent' />

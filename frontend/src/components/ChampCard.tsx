@@ -15,7 +15,6 @@ const ChampCard = (champ: ChampCardProp) => {
     console.log(data)
     update(data)
   })
-  console.log(skins)
   const { activeSkins, updateActiveSkins } = useSkinContext()
   const [activeSkinId, setActiveSkinId] = useState<string | null>(null)
 
@@ -32,9 +31,7 @@ const ChampCard = (champ: ChampCardProp) => {
   return (
     <ChampCard2
       modDropdownMenu={() => <></>}
-      enableMod={(id, enabled) => {
-
-      }}
+      enableMod={() => { }}
       ID={champ.ID}
       Name={champ.Name}
       Image={champ.Image}

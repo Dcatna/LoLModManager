@@ -89,26 +89,27 @@ func (db *DB) SyncChampions() error {
 	}
 	defer tx.Rollback()
 
-	qtx := db.q.WithTx(tx)
-
 	for _, champ := range champResponse.Data {
-		tagsJSON, err := json.Marshal(champ.Tags)
+		const query = `
+			INSERT INTO champions(id, name, image, tags) 
+			VALUES (?, ?, ?, ?)
+			ON CONFLICT(id)
+			DO UPDATE SET 
+    			name = ?,
+    			image = ?,
+    			tags = ?;`
 
-		qtx.InsertOrUpdateChampion(db.ctx, sqlc.InsertOrUpdateChampionParams{
-			ID: champ.ID,
-			Name: sql.NullString{
-				String: champ.Name,
-				Valid:  champ.Name != "",
-			},
-			Image: sql.NullString{
-				String: champ.Image.Full,
-				Valid:  champ.Image.Full != "",
-			},
-			Tags: sql.NullString{
-				String: string(tagsJSON),
-				Valid:  err == nil,
-			},
-		})
+		if _, err := tx.ExecContext(db.ctx, query,
+			champ.ID,
+			champ.Name,
+			champ.Image.Full,
+			strings.Join(champ.Tags, ","),
+			champ.Name,
+			champ.Image.Full,
+			strings.Join(champ.Tags, ","),
+		); err != nil {
+			return err
+		}
 	}
 
 	return tx.Commit()

@@ -27,7 +27,12 @@ type App struct {
 // NewApp creates a new App application struct
 func NewApp(db *db.DB) *App {
 
-	go db.SyncChampions()
+	go func() {
+		err := db.SyncChampions()
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}()
 
 	return &App{
 		db: db,

@@ -11,15 +11,6 @@ VALUES (?, ?);
 SELECT id, name, image, tags 
 FROM champions;
 
--- name: InsertOrUpdateChampion :exec
-INSERT INTO champions(id, name, image, tags) 
-VALUES (:id, :name, :image, :tags)
-ON CONFLICT(id)
-DO UPDATE SET 
-    name = :name,
-    image = :image,
-    tags = :tags;
-
 -- name: SelectChampionsCount :one 
 SELECT COUNT(*) FROM champions;
 

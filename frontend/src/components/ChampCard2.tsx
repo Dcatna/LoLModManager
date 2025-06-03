@@ -1,10 +1,11 @@
-import React, { HTMLAttributes, ReactElement, useEffect, useRef, useState } from "react";
+import React, { HTMLAttributes, memo, ReactElement, useEffect, useRef, useState } from "react";
 import { Card } from "./ui/card";
 import { Switch } from "./ui/switch";
 import { cn, useStateProducer } from "@/lib/utils";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { db } from "wailsjs/go/models";
 import { FetchSkinsForChampionById } from "wailsjs/go/main/App";
+import { Champ } from "@/Types/types";
 
 
 export interface CharacterInfoCardProps extends HTMLAttributes<HTMLDivElement> {
@@ -132,12 +133,14 @@ const ModRow = ({
     );
 };
 
+
 export function ChampCard2({
     modDropdownMenu,
     enableMod,
     ...props
 }: CharacterInfoCardProps) {
 
+    // TODO: Join skins when gettings champs
     const skins = useStateProducer<db.DownloadedSkin[]>([], async (update) => {
         const data = await FetchSkinsForChampionById(props.ID)
         update(data)

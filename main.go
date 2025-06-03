@@ -24,7 +24,6 @@ var assets embed.FS
 
 func main() {
 	ctx := context.Background()
-
 	conn, err := sql.Open("sqlite3", filepath.Join(".", "lolskinmanager.db"))
 	if err != nil {
 		log.Fatal(err)

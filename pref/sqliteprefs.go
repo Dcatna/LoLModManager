@@ -19,6 +19,8 @@ type SqlitePrefs struct {
 
 func (s *SqlitePrefs) Close() error {
 	s.closed.Swap(true)
+	close(s.keyWatchCh)
+
 	return nil
 }
 

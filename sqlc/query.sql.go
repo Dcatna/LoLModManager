@@ -85,12 +85,12 @@ func (q *Queries) GetSetting(ctx context.Context, key string) (sql.NullString, e
 
 const insertOrUpdateChampion = `-- name: InsertOrUpdateChampion :exec
 INSERT INTO champions(id, name, image, tags) 
-VALUES (?1, ?2, ?3, ?4)
+VALUES (?, ?, ?, ?)
 ON CONFLICT(id)
 DO UPDATE SET 
-    name = :name,
-    image = :image,
-    tags = :tags
+    name = sqlc.arg(updateName),
+    image = sqlc.arg(updateImage),
+    tags = sqlc.arg(updateTags)
 `
 
 type InsertOrUpdateChampionParams struct {

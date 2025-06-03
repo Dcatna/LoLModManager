@@ -1,4 +1,4 @@
-import React, { act, useState } from 'react'
+import React, { act, memo, useMemo, useState } from 'react'
 import { GetChampions } from "../../wailsjs/go/main/App";
 import { cn, useStateProducerT } from '@/lib/utils';
 import { Champ } from '@/Types/types';
@@ -6,6 +6,7 @@ import ChampCard from '@/components/ChampCard';
 import PatcherOutput from '@/components/PatcherOutput';
 import { Input } from '@/components/ui/input';
 import { ChampCard2 } from '@/components/ChampCard2';
+import { Car } from 'lucide-react';
 
 type Props = {}
 
@@ -29,6 +30,7 @@ function GameActionsTopBar(props: {
 }
 
 const Home = (props: Props) => {
+
   const [activeSkins, setActiveSkins] = useState<string[]>([])
   const [search, setSearch] = useState("");
 
@@ -47,23 +49,21 @@ const Home = (props: Props) => {
           <GameActionsTopBar input={search} onInputChange={(input) => setSearch(input)} />
         </div>
       </div>
-      <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4 mt-4 mx-4">
-        {value.map((champ) => (
+      <div className="columns-1 md:columns-2 lg:columns-2 xl:columns-3 gap-4 space-y-4 mt-4 mx-4 mb-4">
+        {value.map((champ) =>
           <ChampCard2
             data-label={champ.Name}
-            className="panel-label panel-label-default break-inside-avoid"
+            className="panel-label panel-label-default"
+            key={champ.ID}
             modDropdownMenu={() => <></>}
-            enableMod={(id, enabled) => {
-
-            }}
+            enableMod={() => { }}
             ID={champ.ID}
             Name={champ.Name}
             Image={champ.Image}
             Tags={[]}
             skins={[]}
           />
-
-        ))}
+        )}
       </div>
     </div>
   )
