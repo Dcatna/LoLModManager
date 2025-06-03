@@ -6,7 +6,7 @@ export function BrowseFolders():Promise<string>;
 
 export function BrowseLeagueFolder():Promise<string>;
 
-export function DeleteSkin(arg1:string):Promise<void>;
+export function DeleteSkin(arg1:number):Promise<void>;
 
 export function DisableSkin(arg1:string):Promise<void>;
 
@@ -20,7 +20,7 @@ export function FindLeaugeDownload():Promise<string>;
 
 export function GetChampions():Promise<Array<db.Champion>>;
 
-export function GetChampionsForSkin(arg1:string):Promise<Array<db.Champion>>;
+export function GetChampionsForSkin(arg1:number):Promise<Array<db.Champion>>;
 
 export function GetGalleryForSkin(arg1:string):Promise<Array<db.Gallery>>;
 

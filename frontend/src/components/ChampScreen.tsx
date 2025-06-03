@@ -20,18 +20,18 @@ const ChampScreen = () => {
 
   const handleDelete = async (skinId: string) => {
     console.log(champ)
-    const champions = await GetChampionsForSkin(skinId)
+    const champions = await GetChampionsForSkin(Number(skinId))
     console.log(champions)
     if (champions === null) {
       alert("deleted failed")
     }
     if (champions.length > 1) {
-      alert("This would delete for: ", )
+      alert("This would delete for: ",)
     }
 
-    await DeleteSkin(skinId)
+    await DeleteSkin(Number(skinId))
 
-    setTrigger(p => p+1)
+    setTrigger(p => p + 1)
 
   };
 
@@ -59,7 +59,8 @@ const ChampScreen = () => {
             <button
               onClick={() => {
                 console.log(skin, "SIOSDFSD")
-                handleDelete(skin.id)}}
+                handleDelete(skin.id)
+              }}
               className="text-red-500 hover:text-red-700 transition"
               title="Delete Skin"
             >

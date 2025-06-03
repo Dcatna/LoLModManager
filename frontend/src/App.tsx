@@ -1,4 +1,4 @@
-import { GetChampions } from  "../wailsjs/go/main/App"; // path may vary based on setup
+import { GetChampions } from "../wailsjs/go/main/App"; // path may vary based on setup
 import { useEffect, useState } from 'react';
 import { ThemeProvider } from "./components/Theme";
 import { SidebarProvider, SidebarTrigger } from "./components/ui/sidebar";
@@ -14,11 +14,10 @@ function App() {
       <div className="bg-background text-foreground max-h-screen  flex flex-col ">
         <SkinProvider>
           <SidebarProvider className="max-h-screen overflow-hidden">
-            <AppSidebar collapsible="icon"/>
-            <SidebarTrigger />
-              <main className="flex-1 overflow-y-auto p-4">
-                <Outlet />
-              </main>
+            <AppSidebar collapsible="icon" />
+            <main className="flex-1 overflow-y-auto">
+              <Outlet />
+            </main>
           </SidebarProvider>
         </SkinProvider>
       </div>

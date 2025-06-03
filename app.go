@@ -25,15 +25,18 @@ type App struct {
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	db := db.InitDB()
-	
-	err := db.SeedChampions()
+func NewApp(db *db.DB) *App {
 
-	if err != nil {
-		panic("newapp error")
+	go func() {
+		err := db.SyncChampions()
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}()
+
+	return &App{
+		db: db,
 	}
-	return &App{db: db}
 }
 
 // startup is called when the app starts. The context is saved
@@ -41,8 +44,6 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 	runtime.LogInfo(ctx, "Starting Mod Manager")
-
-
 
 }
 
@@ -163,10 +164,10 @@ func (a *App) SetSetting(key, value string) error {
 func (a *App) GetSetting(key string) (string, error) {
 	return a.db.GetSetting(key)
 }
-func (a *App) DeleteSkin(skinID string) error {
+func (a *App) DeleteSkin(skinID int64) error {
 	return a.db.DeleteSkin(skinID)
 }
-func (a *App) GetChampionsForSkin(skinID string) ([]db.Champion, error) {
+func (a *App) GetChampionsForSkin(skinID int64) ([]db.Champion, error) {
 	return a.db.GetChampionsForSkin(skinID)
 }
 
